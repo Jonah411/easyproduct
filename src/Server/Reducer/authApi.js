@@ -7,7 +7,8 @@ const combinedEndpoints = (builder) => ({
 
 export const authApi = createApi({
   reducerPath: "authApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:5001/app" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "https://ewserver.onrender.com/app" }),
+  //   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:5001/app" }),
   endpoints: combinedEndpoints,
 });
 
