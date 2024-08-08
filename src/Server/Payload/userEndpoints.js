@@ -9,4 +9,7 @@ export const userEndpoints = (builder) => ({
       body: formData,
     }),
   }),
+  getUser: builder.query({
+    query: (id) => `/user/${id}`,
+  }),
 });

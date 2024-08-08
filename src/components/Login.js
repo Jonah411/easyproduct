@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import {
   Grid,
   FormControl,
@@ -13,16 +13,61 @@ import {
   InputAdornment,
   IconButton,
   OutlinedInput,
+  FormHelperText,
 } from "@mui/material";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { Visibility, VisibilityOff, Clear } from "@mui/icons-material";
 import OrgImg from "../images/orgImage.jpg";
-import { useGetAllOrgQuery } from "../Server/Reducer/authApi";
+import {
+  useCreateOrganizationMutation,
+  useGetAllOrgQuery,
+  useLoginMutation,
+} from "../Server/Reducer/authApi";
 import CreateOrganization from "./CreateOrganization";
+import CreateUser from "./CreateUser";
 
 const Login = () => {
+  const [
+    login,
+    {
+      data: loginData,
+      isSuccess: loginSuccess,
+      error: loginDataError,
+      isError: loginError,
+    },
+  ] = useLoginMutation();
   const { data: orgData, isLoading: orgLoading } = useGetAllOrgQuery("");
+  const [createOrganization, { data, error: createError, isSuccess, isError }] =
+    useCreateOrganizationMutation();
   const [open, setOpen] = useState(false);
+  const [openUser, setOpenUser] = useState(false);
+  const [statusOrg, setStatusOrg] = useState(false);
+  const [formLogin, setFormLogin] = useState({
+    orgName: "",
+    email: "",
+    password: "",
+  });
+  const [formValue, setFormValue] = useState({
+    orgName: "",
+    orgPlace: "",
+    orgAddress: "",
+    orgMembersCount: "",
+    orgDescription: "",
+    orgYear: "",
+    orgMebAgeFrom: "",
+    orgMebAgeTo: "",
+    name: "",
+    age: "",
+    gender: "",
+    email: "",
+    phoneNo: "",
+    password: "",
+  });
+  const [file, setFile] = useState(null);
+  const [error, setError] = useState("");
+  const [preview, setPreview] = useState("");
+
+  const [formError, setFormError] = useState({});
+  const [formLoginError, setFormLoginError] = useState({});
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -39,6 +84,189 @@ const Login = () => {
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
+  };
+  const validation = (value) => {
+    const error = {};
+
+    // if (!fs) {
+    //   error.fs = "Organization logo is required.";
+    // }
+    if (!value.orgName) {
+      error.orgName = "Organization name is required.";
+    }
+    if (!value.orgPlace) {
+      error.orgPlace = "Organization place is required.";
+    }
+    if (!value.orgAddress) {
+      error.orgAddress = "Organization address is required.";
+    }
+    if (!value.orgMembersCount) {
+      error.orgMembersCount = "Organization members count is required.";
+    } else if (isNaN(value.orgMembersCount)) {
+      error.orgMembersCount = "Organization members count must be a number.";
+    }
+    if (!value.orgDescription) {
+      error.orgDescription = "Organization description is required.";
+    }
+    if (!value.orgYear) {
+      error.orgYear = "Organization year is required.";
+    } else if (isNaN(value.orgYear)) {
+      error.orgYear = "Organization year must be a number.";
+    }
+    if (!value.orgMebAgeFrom) {
+      error.orgMebAgeFrom = "Member age from is required.";
+    } else if (isNaN(value.orgMebAgeFrom)) {
+      error.orgMebAgeFrom = "Member age from must be a number.";
+    }
+    if (!value.orgMebAgeTo) {
+      error.orgMebAgeTo = "Member age to is required.";
+    } else if (isNaN(value.orgMebAgeTo)) {
+      error.orgMebAgeTo = "Member age to must be a number.";
+    }
+
+    return error;
+  };
+
+  const validationUser = (value) => {
+    const error = {};
+    if (!value.name) {
+      error.name = "User Name is required.";
+    }
+    if (!value.age) {
+      error.age = "User age to is required.";
+    } else if (isNaN(value.age)) {
+      error.age = "User age to must be a number.";
+    }
+    if (!value.gender) {
+      error.gender = "User Gender is required.";
+    }
+    if (!value.email) {
+      error.email = "User Email is required.";
+    }
+    if (!value.phoneNo) {
+      error.phoneNo = "User PhoneNo is required.";
+    }
+    if (!value.password) {
+      error.password = "User Password is required.";
+    }
+    return error;
+  };
+
+  const validationLogin = (value) => {
+    const error = {};
+    if (!value.orgName) {
+      error.orgName = "Organization is required.";
+    }
+
+    if (!value.email) {
+      error.email = "Email is required.";
+    }
+    if (!value.password) {
+      error.password = "Password is required.";
+    }
+
+    return error;
+  };
+  const handleClick = () => {
+    setFormError(validation(formValue, file));
+    const errorData = validation(formValue, file);
+    if (Object.keys(errorData)?.length === 0) {
+      setOpen(false);
+      setOpenUser(true);
+    }
+  };
+  const handleUserClick = () => {
+    setFormError(validationUser(formValue, file));
+    const errorData = validationUser(formValue);
+
+    if (Object.keys(errorData)?.length === 0) {
+      console.log(formValue);
+
+      var formData = new FormData();
+      formData.append("json_data", JSON.stringify(formValue));
+      formData.append("orgLogo", file);
+      createOrganization(formData);
+    }
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      setOpenUser(false);
+      toast.success(data?.msg, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+    if (isError) {
+      toast.error(createError?.data?.msg, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+    if (loginSuccess) {
+      toast.success(loginData?.msg, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+    if (loginError) {
+      toast.error(loginDataError?.data?.msg, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  }, [
+    isSuccess,
+    isError,
+    data,
+    createError,
+    setOpen,
+    loginSuccess,
+    loginDataError,
+    loginData,
+    loginError,
+  ]);
+
+  const handleLogin = async () => {
+    setFormLoginError(validationLogin(formLogin));
+    const errorData = validationLogin(formLogin);
+    if (Object.keys(errorData)?.length === 0) {
+      const body = {
+        organization: formLogin?.orgName,
+        email: formLogin?.email,
+        password: formLogin?.password,
+      };
+      try {
+        await login(body).unwrap();
+        toast.success("Login successful!");
+      } catch (err) {
+        toast.warning("Login failed!");
+      }
+    }
   };
 
   return (
@@ -63,13 +291,54 @@ const Login = () => {
                     label="Organization Name"
                     variant="outlined"
                     defaultValue=""
+                    onChange={(e) => {
+                      setFormLogin({ ...formLogin, orgName: e.target.value });
+                      const newList = orgData?.data?.find(
+                        (li) => li?._id === e.target.value
+                      );
+                      if (newList) {
+                        setStatusOrg(true);
+                        setFormValue({
+                          ...formValue,
+                          orgName: newList?.orgName,
+                          orgPlace: newList?.orgPlace,
+                          orgAddress: newList?.orgAddress,
+                          orgMembersCount: newList?.orgMembersCount,
+                          orgDescription: newList?.orgDescription,
+                          orgYear: newList?.orgYear,
+                          orgMebAgeFrom: newList?.orgMebAgeFrom,
+                          orgMebAgeTo: newList?.orgMebAgeTo,
+                        });
+                        setPreview(newList?.orgLogo);
+                      } else {
+                        setStatusOrg(false);
+                        setFormValue({
+                          ...formValue,
+                          orgName: "",
+                          orgPlace: "",
+                          orgAddress: "",
+                          orgMembersCount: "",
+                          orgDescription: "",
+                          orgYear: "",
+                          orgMebAgeFrom: "",
+                          orgMebAgeTo: "",
+                        });
+                        setPreview("");
+                      }
+                    }}
                   >
+                    <MenuItem value="1">Select</MenuItem>
                     {orgData?.data.map((option) => (
                       <MenuItem key={option?._id} value={option?._id}>
                         {option?.orgName}
                       </MenuItem>
                     ))}
                   </Select>
+                  {formLoginError?.orgName && (
+                    <FormHelperText error>
+                      {formLoginError?.orgName}
+                    </FormHelperText>
+                  )}
                 </FormControl>
               )}
               <FormControl fullWidth className="mt-4">
@@ -77,7 +346,14 @@ const Login = () => {
                   id="outlined-basic"
                   label="Email"
                   variant="outlined"
+                  value={formLogin?.email}
+                  onChange={(e) => {
+                    setFormLogin({ ...formLogin, email: e.target.value });
+                  }}
                 />
+                {formLoginError?.email && (
+                  <FormHelperText error>{formLoginError?.email}</FormHelperText>
+                )}
               </FormControl>
               <FormControl fullWidth className="mt-4">
                 <InputLabel id="demo-simple-select-label">Password</InputLabel>
@@ -85,6 +361,10 @@ const Login = () => {
                   id="outlined-basic"
                   label="Password"
                   variant="outlined"
+                  value={formLogin?.password ? formLogin?.password : ""}
+                  onChange={(e) => {
+                    setFormLogin({ ...formLogin, password: e.target.value });
+                  }}
                   type={showPassword ? "text" : "password"}
                   endAdornment={
                     <InputAdornment position="end">
@@ -96,12 +376,34 @@ const Login = () => {
                       >
                         {showPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
+                      <IconButton
+                        aria-label="clear password"
+                        onClick={() => {
+                          setFormLogin({ ...formLogin, password: "" });
+                        }}
+                        edge="end"
+                      >
+                        <Clear />
+                      </IconButton>
                     </InputAdornment>
                   }
                 />
+                {formLoginError?.password && (
+                  <FormHelperText error>
+                    {formLoginError?.password}
+                  </FormHelperText>
+                )}
               </FormControl>
               <FormControl fullWidth className="mt-4">
-                <Button variant="contained" size="large" className="p-3">
+                <Button
+                  variant="contained"
+                  size="large"
+                  className="p-3"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleLogin();
+                  }}
+                >
                   Login
                 </Button>
               </FormControl>
@@ -113,7 +415,7 @@ const Login = () => {
                     style={{ cursor: "pointer" }}
                     onClick={toggleDrawer(true)}
                   >
-                    create Organization
+                    {statusOrg ? "View Organization" : "create Organization"}
                   </p>
                 </div>
               </FormControl>
@@ -135,7 +437,41 @@ const Login = () => {
           },
         }}
       >
-        <CreateOrganization setOpen={setOpen} />
+        <CreateOrganization
+          setOpen={setOpen}
+          formValue={formValue}
+          setFormValue={setFormValue}
+          setFile={setFile}
+          file={file}
+          setError={setError}
+          error={error}
+          setPreview={setPreview}
+          preview={preview}
+          setFormError={setFormError}
+          formError={formError}
+          handleClick={handleClick}
+          statusOrg={statusOrg}
+        />
+      </Drawer>
+      <Drawer
+        anchor="right"
+        open={openUser}
+        onClose={toggleDrawer(false)}
+        PaperProps={{
+          sx: {
+            backgroundColor: "#f5f5f5",
+            width: "250px",
+          },
+        }}
+      >
+        <CreateUser
+          setOpenUser={setOpenUser}
+          formValue={formValue}
+          setFormValue={setFormValue}
+          setFormError={setFormError}
+          formError={formError}
+          handleUserClick={handleUserClick}
+        />
       </Drawer>
     </div>
   );

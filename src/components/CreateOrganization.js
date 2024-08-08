@@ -8,27 +8,21 @@ import {
   Box,
   FormHelperText,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { useCreateOrganizationMutation } from "../Server/Reducer/authApi";
-import { toast } from "react-toastify";
+import React from "react";
+import { BASE_URL } from "../common/ConstaltsVariables";
 
-const CreateOrganization = ({ setOpen }) => {
-  const [createOrganization, { data, error: createError, isSuccess, isError }] =
-    useCreateOrganizationMutation();
-  const [file, setFile] = useState(null);
-  const [error, setError] = useState("");
-  const [preview, setPreview] = useState("");
-  const [formValue, setFormValue] = useState({
-    orgName: "",
-    orgPlace: "",
-    orgAddress: "",
-    orgMembersCount: "",
-    orgDescription: "",
-    orgYear: "",
-    orgMebAgeFrom: "",
-    orgMebAgeTo: "",
-  });
-  const [formError, setFormError] = useState({});
+const CreateOrganization = ({
+  setFormValue,
+  formValue,
+  setFile,
+  setError,
+  error,
+  setPreview,
+  preview,
+  formError,
+  handleClick,
+  statusOrg,
+}) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValue({ ...formValue, [name]: value });
@@ -54,84 +48,6 @@ const CreateOrganization = ({ setOpen }) => {
     }
   };
 
-  const validation = (value, fs) => {
-    const error = {};
-
-    if (!fs) {
-      error.fs = "Organization logo is required.";
-    }
-    if (!value.orgName) {
-      error.orgName = "Organization name is required.";
-    }
-    if (!value.orgPlace) {
-      error.orgPlace = "Organization place is required.";
-    }
-    if (!value.orgAddress) {
-      error.orgAddress = "Organization address is required.";
-    }
-    if (!value.orgMembersCount) {
-      error.orgMembersCount = "Organization members count is required.";
-    } else if (isNaN(value.orgMembersCount)) {
-      error.orgMembersCount = "Organization members count must be a number.";
-    }
-    if (!value.orgDescription) {
-      error.orgDescription = "Organization description is required.";
-    }
-    if (!value.orgYear) {
-      error.orgYear = "Organization year is required.";
-    } else if (isNaN(value.orgYear)) {
-      error.orgYear = "Organization year must be a number.";
-    }
-    if (!value.orgMebAgeFrom) {
-      error.orgMebAgeFrom = "Member age from is required.";
-    } else if (isNaN(value.orgMebAgeFrom)) {
-      error.orgMebAgeFrom = "Member age from must be a number.";
-    }
-    if (!value.orgMebAgeTo) {
-      error.orgMebAgeTo = "Member age to is required.";
-    } else if (isNaN(value.orgMebAgeTo)) {
-      error.orgMebAgeTo = "Member age to must be a number.";
-    }
-
-    return error;
-  };
-  const handleClick = () => {
-    setFormError(validation(formValue, file));
-    const errorData = validation(formValue, file);
-    if (Object.keys(errorData)?.length === 0) {
-      var formData = new FormData();
-      formData.append("json_data", JSON.stringify(formValue));
-      formData.append("orgLogo", file);
-      createOrganization(formData);
-    }
-  };
-  useEffect(() => {
-    if (isSuccess) {
-      setOpen(false);
-      toast.success(data?.msg, {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    }
-    if (isError) {
-      toast.error(createError?.data?.msg, {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    }
-  }, [isSuccess, isError, data, createError, setOpen]);
   return (
     <div>
       <div className="text-center mt-2">
@@ -146,6 +62,8 @@ const CreateOrganization = ({ setOpen }) => {
             size="small"
             name="orgName"
             onChange={handleChange}
+            value={formValue?.orgName}
+            disabled={statusOrg}
           />
           {formError?.orgName && (
             <FormHelperText error>{formError?.orgName}</FormHelperText>
@@ -159,6 +77,8 @@ const CreateOrganization = ({ setOpen }) => {
             size="small"
             name="orgPlace"
             onChange={handleChange}
+            value={formValue?.orgPlace}
+            disabled={statusOrg}
           />
           {formError?.orgPlace && (
             <FormHelperText error>{formError?.orgPlace}</FormHelperText>
@@ -174,6 +94,8 @@ const CreateOrganization = ({ setOpen }) => {
             rows={2}
             name="orgAddress"
             onChange={handleChange}
+            value={formValue?.orgAddress}
+            disabled={statusOrg}
           />
           {formError?.orgAddress && (
             <FormHelperText error>{formError?.orgAddress}</FormHelperText>
@@ -190,6 +112,8 @@ const CreateOrganization = ({ setOpen }) => {
                 name="orgYear"
                 onChange={handleChange}
                 type="number"
+                value={formValue?.orgYear}
+                disabled={statusOrg}
               />
               {formError?.orgYear && (
                 <FormHelperText error>{formError?.orgYear}</FormHelperText>
@@ -206,6 +130,8 @@ const CreateOrganization = ({ setOpen }) => {
                 name="orgMembersCount"
                 onChange={handleChange}
                 type="number"
+                value={formValue?.orgMembersCount}
+                disabled={statusOrg}
               />
               {formError?.orgMembersCount && (
                 <FormHelperText error>
@@ -225,39 +151,63 @@ const CreateOrganization = ({ setOpen }) => {
             rows={2}
             name="orgDescription"
             onChange={handleChange}
+            value={formValue?.orgDescription}
+            disabled={statusOrg}
           />
           {formError?.orgDescription && (
             <FormHelperText error>{formError?.orgDescription}</FormHelperText>
           )}
         </FormControl>
         <FormControl fullWidth sx={{ mt: 4 }}>
-          <InputLabel htmlFor="upload-logo">Logo</InputLabel>
-          <OutlinedInput
-            id="upload-logo"
-            type="file"
-            label="Logo"
-            size="small"
-            inputProps={{
-              accept: "image/*",
-            }}
-            onChange={handleFileChange}
-          />
+          {statusOrg ? (
+            ""
+          ) : (
+            <>
+              <InputLabel htmlFor="upload-logo">Logo</InputLabel>
+              <OutlinedInput
+                id="upload-logo"
+                type="file"
+                label="Logo"
+                size="small"
+                inputProps={{
+                  accept: "image/*",
+                }}
+                onChange={handleFileChange}
+                disabled={statusOrg}
+              />
+            </>
+          )}
+
           {error && <FormHelperText error>{error}</FormHelperText>}
           {formError?.fs && (
             <FormHelperText error>{formError?.fs}</FormHelperText>
           )}
-          {preview && (
-            <Box mt={2}>
+          {statusOrg ? (
+            <div>
               <img
-                src={preview}
-                alt="Preview"
-                style={{
-                  width: "100%",
-                  maxHeight: "200px",
-                  objectFit: "contain",
-                }}
+                src={`${BASE_URL}/image/${preview}`}
+                width="30%"
+                alt=""
+                className="rounded mx-auto d-block img-thumbnail"
               />
-            </Box>
+            </div>
+          ) : (
+            <div>
+              {" "}
+              {preview && (
+                <Box mt={2}>
+                  <img
+                    src={preview}
+                    alt="Preview"
+                    style={{
+                      width: "100%",
+                      maxHeight: "200px",
+                      objectFit: "contain",
+                    }}
+                  />
+                </Box>
+              )}
+            </div>
           )}
         </FormControl>
         <Grid container spacing={2}>
@@ -271,6 +221,8 @@ const CreateOrganization = ({ setOpen }) => {
                 name="orgMebAgeFrom"
                 onChange={handleChange}
                 type="number"
+                value={formValue?.orgMebAgeFrom}
+                disabled={statusOrg}
               />
               {formError?.orgMebAgeFrom && (
                 <FormHelperText error>
@@ -289,6 +241,8 @@ const CreateOrganization = ({ setOpen }) => {
                 name="orgMebAgeTo"
                 type="number"
                 onChange={handleChange}
+                value={formValue?.orgMebAgeTo}
+                disabled={statusOrg}
               />
               {formError?.orgMebAgeTo && (
                 <FormHelperText error>{formError?.orgMebAgeTo}</FormHelperText>
