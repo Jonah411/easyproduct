@@ -1,0 +1,17 @@
+/* .app {
+  display: flex;
+} */
+
+.sidebar {
+  /* Sidebar styles */
+}
+
+.content {
+  flex: 1;
+  transition: margin-left 0.3s ease; /* Smooth transition for content width */
+  margin-left: 0; /* Default margin when sidebar is hidden */
+}
+
+.content-with-sidebar {
+  margin-left: 250px; /* Margin when sidebar is shown, should match the width of the sidebar */
+}

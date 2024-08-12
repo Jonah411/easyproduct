@@ -28,3 +28,21 @@
     height: 115vh;
   }
 }
+/* .app {
+  display: flex;
+} */
+
+.content {
+  flex-grow: 1;
+}
+
+@media (max-width: 768px) {
+  .content {
+    margin-left: 0;
+  }
+}
+
+.align-center {
+  display: flex;
+  align-items: center; /* Centers items vertically */
+}

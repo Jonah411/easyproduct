@@ -59,4 +59,5 @@ export const {
   useCreateOrganizationMutation,
   useGetUserQuery,
   useLoginMutation,
+  useLogoutQuery,
 } = authApi;

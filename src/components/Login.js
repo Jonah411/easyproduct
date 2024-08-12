@@ -20,22 +20,21 @@ import OrgImg from "../images/orgImage.jpg";
 import {
   useCreateOrganizationMutation,
   useGetAllOrgQuery,
-  useLoginMutation,
 } from "../Server/Reducer/authApi";
 import CreateOrganization from "./CreateOrganization";
 import CreateUser from "./CreateUser";
 
-const Login = () => {
-  const [
-    login,
-    {
-      data: loginData,
-      isSuccess: loginSuccess,
-      error: loginDataError,
-      isError: loginError,
-    },
-  ] = useLoginMutation();
-  const { data: orgData, isLoading: orgLoading } = useGetAllOrgQuery("");
+const Login = ({
+  loginError,
+  loginDataError,
+  loginSuccess,
+  loginData,
+  login,
+}) => {
+  const { data: orgData, isLoading: orgLoading } = useGetAllOrgQuery("", {
+    refetchOnMountOrArgChange: true,
+    skip: false,
+  });
   const [createOrganization, { data, error: createError, isSuccess, isError }] =
     useCreateOrganizationMutation();
   const [open, setOpen] = useState(false);
@@ -215,41 +214,8 @@ const Login = () => {
         theme: "light",
       });
     }
-    if (loginSuccess) {
-      toast.success(loginData?.msg, {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    }
-    if (loginError) {
-      toast.error(loginDataError?.data?.msg, {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
-    }
-  }, [
-    isSuccess,
-    isError,
-    data,
-    createError,
-    setOpen,
-    loginSuccess,
-    loginDataError,
-    loginData,
-    loginError,
-  ]);
+  }, [isSuccess, isError, data, createError, setOpen]);
+  useEffect(() => {});
 
   const handleLogin = async () => {
     setFormLoginError(validationLogin(formLogin));
@@ -262,7 +228,30 @@ const Login = () => {
       };
       try {
         await login(body).unwrap();
-        toast.success("Login successful!");
+        if (loginSuccess) {
+          toast.success(loginData?.msg, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        }
+        if (loginError) {
+          toast.error(loginDataError?.data?.msg, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        }
       } catch (err) {
         toast.warning("Login failed!");
       }

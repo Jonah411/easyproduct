@@ -3,8 +3,11 @@ import { createSlice } from "@reduxjs/toolkit";
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    token: localStorage.getItem("token"),
-    refreshToken: localStorage.getItem("refreshToken"),
+    token: localStorage.getItem("token") || null,
+    refreshToken: localStorage.getItem("refreshToken") || null,
+    user: JSON.parse(localStorage.getItem("user")) || null,
+    org: JSON.parse(localStorage.getItem("org")) || null,
+    roll: JSON.parse(localStorage.getItem("roll")) || null,
   },
   reducers: {
     setToken: (state, action) => {
@@ -15,16 +18,41 @@ const authSlice = createSlice({
       state.refreshToken = action.payload;
       localStorage.setItem("refreshToken", action.payload);
     },
+    userData: (state, action) => {
+      state.user = action.payload;
+      localStorage.setItem("user", JSON.stringify(action.payload));
+    },
+    orgData: (state, action) => {
+      state.org = action.payload;
+      localStorage.setItem("org", JSON.stringify(action.payload));
+    },
+    rollData: (state, action) => {
+      state.roll = action.payload;
+      localStorage.setItem("roll", JSON.stringify(action.payload));
+    },
     logout: (state) => {
       state.token = null;
       state.refreshToken = null;
       localStorage.removeItem("token");
       localStorage.removeItem("refreshToken");
+      localStorage.removeItem("org");
+      localStorage.removeItem("user");
+      localStorage.removeItem("roll");
     },
   },
 });
 
-export const { setToken, setRefreshToken, logout } = authSlice.actions;
+export const {
+  setToken,
+  setRefreshToken,
+  logout,
+  userData,
+  orgData,
+  rollData,
+} = authSlice.actions;
 export const selectToken = (state) => state.auth.token;
 export const selectRefreshToken = (state) => state.auth.refreshToken;
+export const selectUser = (state) => state.auth.user;
+export const selectOrg = (state) => state.auth.org;
+export const selectRoll = (state) => state.auth.roll;
 export default authSlice.reducer;

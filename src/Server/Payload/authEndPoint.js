@@ -1,4 +1,10 @@
-import { setToken, setRefreshToken } from "../Reducer/authSlice";
+import {
+  setToken,
+  setRefreshToken,
+  orgData,
+  rollData,
+  userData,
+} from "../Reducer/authSlice";
 
 export const authEndpoints = (builder) => ({
   login: builder.mutation({
@@ -7,14 +13,29 @@ export const authEndpoints = (builder) => ({
       method: "POST",
       body: user,
     }),
-    onQueryStarted: async ({ dispatch, queryFulfilled }) => {
+    onQueryStarted: async (user, { dispatch, queryFulfilled }) => {
       try {
         const { data } = await queryFulfilled;
-        dispatch(setToken(data.token));
-        dispatch(setRefreshToken(data.refreshToken));
+        console.log(await queryFulfilled, "user", data?.data?.token);
+        dispatch(setToken(data?.data?.token));
+        dispatch(setRefreshToken(data?.data?.refreshToken));
+        dispatch(orgData(data?.data?.userData?.Organization));
+        dispatch(rollData(data?.data?.userData?.Roll));
+        dispatch(
+          userData({
+            _id: data?.data?.userData?._id,
+            name: data?.data?.userData?.name,
+            email: data?.data?.userData?.email,
+            gender: data?.data?.userData?.gender,
+            phoneNo: data?.data?.userData?.phoneNo,
+          })
+        );
       } catch (err) {
-        // Handle error
+        console.error("Login failed: ", err);
       }
     },
+  }),
+  logout: builder.query({
+    query: () => `/auth/logout`,
   }),
 });
