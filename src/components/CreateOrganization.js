@@ -69,7 +69,22 @@ const CreateOrganization = ({
             <FormHelperText error>{formError?.orgName}</FormHelperText>
           )}
         </FormControl>
-        <FormControl fullWidth className="mt-4">
+        <FormControl fullWidth className="mt-2">
+          <TextField
+            id="outlined-basic"
+            label="Organization Display Name"
+            variant="outlined"
+            size="small"
+            name="orgDisplayName"
+            onChange={handleChange}
+            value={formValue?.orgDisplayName}
+            disabled={statusOrg}
+          />
+          {formError?.orgDisplayName && (
+            <FormHelperText error>{formError?.orgDisplayName}</FormHelperText>
+          )}
+        </FormControl>
+        <FormControl fullWidth className="mt-2">
           <TextField
             id="outlined-basic"
             label="Organization Place"
@@ -84,7 +99,7 @@ const CreateOrganization = ({
             <FormHelperText error>{formError?.orgPlace}</FormHelperText>
           )}
         </FormControl>
-        <FormControl fullWidth className="mt-4">
+        <FormControl fullWidth className="mt-2">
           <TextField
             id="outlined-basic"
             label="Organization Address"
@@ -103,7 +118,7 @@ const CreateOrganization = ({
         </FormControl>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth className="mt-4">
+            <FormControl fullWidth className="mt-2">
               <TextField
                 id="outlined-basic"
                 label="Year"
@@ -121,7 +136,7 @@ const CreateOrganization = ({
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth className="mt-4">
+            <FormControl fullWidth className="mt-2">
               <TextField
                 id="outlined-basic"
                 label="Size"
@@ -141,7 +156,7 @@ const CreateOrganization = ({
             </FormControl>
           </Grid>
         </Grid>
-        <FormControl fullWidth className="mt-4">
+        <FormControl fullWidth className="mt-2">
           <TextField
             id="outlined-basic"
             label="Description"
@@ -212,7 +227,7 @@ const CreateOrganization = ({
         </FormControl>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth className="mt-4">
+            <FormControl fullWidth className="mt-2">
               <TextField
                 id="outlined-basic"
                 label="Age Start"
@@ -232,7 +247,7 @@ const CreateOrganization = ({
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth className="mt-4">
+            <FormControl fullWidth className="mt-2">
               <TextField
                 id="outlined-basic"
                 label="Age End"
@@ -250,7 +265,7 @@ const CreateOrganization = ({
             </FormControl>
           </Grid>
         </Grid>
-        <FormControl fullWidth className="mt-4">
+        <FormControl fullWidth className="mt-2">
           <Button
             variant="contained"
             size="large"

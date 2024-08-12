@@ -60,4 +60,5 @@ export const {
   useGetUserQuery,
   useLoginMutation,
   useLogoutQuery,
+  useGetSingleUserQuery,
 } = authApi;

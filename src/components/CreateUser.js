@@ -8,6 +8,8 @@ import {
   Select,
   MenuItem,
   InputLabel,
+  OutlinedInput,
+  Box,
 } from "@mui/material";
 
 const CreateUser = ({
@@ -16,12 +18,36 @@ const CreateUser = ({
   setOpenUser,
   formError,
   handleUserClick,
+  setFileUser,
+  fileUser,
+  setErrorUser,
+  errorUser,
+  setPreviewUser,
+  previewUser,
 }) => {
-  console.log(formError, "formError");
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValue({ ...formValue, [name]: value });
+  };
+  const handleFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+    const maxSize = 5 * 1024 * 1024; // 5 MB
+
+    if (selectedFile) {
+      if (selectedFile.size > maxSize) {
+        setErrorUser("File size exceeds 5 MB");
+        setFileUser(null);
+        setPreviewUser("");
+      } else {
+        setErrorUser("");
+        setFileUser(selectedFile);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setPreviewUser(reader.result);
+        };
+        reader.readAsDataURL(selectedFile);
+      }
+    }
   };
   return (
     <div>
@@ -122,7 +148,57 @@ const CreateUser = ({
             <FormHelperText error>{formError?.password}</FormHelperText>
           )}
         </FormControl>
+        <FormControl fullWidth sx={{ mt: 4 }}>
+          <>
+            <InputLabel htmlFor="upload-logo">User Image</InputLabel>
+            <OutlinedInput
+              id="upload-logo"
+              type="file"
+              label="User Image"
+              size="small"
+              inputProps={{
+                accept: "image/*",
+              }}
+              onChange={handleFileChange}
+              // disabled={statusOrg}
+            />
+          </>
 
+          {errorUser && <FormHelperText error>{errorUser}</FormHelperText>}
+          {/* {formError?.fs && (
+            <FormHelperText error>{formError?.fs}</FormHelperText>
+          )} */}
+          <div>
+            {previewUser && (
+              <Box mt={2}>
+                <img
+                  src={previewUser}
+                  alt="Preview"
+                  style={{
+                    width: "100%",
+                    maxHeight: "200px",
+                    objectFit: "contain",
+                  }}
+                />
+              </Box>
+            )}
+          </div>
+        </FormControl>
+        <FormControl fullWidth className="mt-4">
+          <TextField
+            id="outlined-basic"
+            label="User Address"
+            variant="outlined"
+            size="small"
+            multiline
+            rows={2}
+            name="userAddress"
+            onChange={handleChange}
+          />
+          {/* {formError?.userAddress && (
+            <FormHelperText error>{formError?.userAddress}</FormHelperText>
+          )} */}
+        </FormControl>
         <FormControl fullWidth className="mt-4">
           <Button
             variant="contained"

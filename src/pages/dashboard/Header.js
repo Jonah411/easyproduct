@@ -63,6 +63,7 @@ import { logout, selectOrg } from "../../Server/Reducer/authSlice";
 // import { BsList } from "react-icons/bs";
 import { BASE_URL } from "../../common/ConstaltsVariables";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 // const Search = styled("div")(({ theme }) => ({
 //   position: "relative",
@@ -106,6 +107,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 export default function Header({ toggleSidebar }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const org = useSelector(selectOrg);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -147,7 +149,14 @@ export default function Header({ toggleSidebar }) {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem
+        onClick={() => {
+          handleMenuClose();
+          navigate("/profile");
+        }}
+      >
+        Profile
+      </MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
       <MenuItem
         onClick={() => {

@@ -24,13 +24,7 @@ import {
 import CreateOrganization from "./CreateOrganization";
 import CreateUser from "./CreateUser";
 
-const Login = ({
-  loginError,
-  loginDataError,
-  loginSuccess,
-  loginData,
-  login,
-}) => {
+const Login = ({ loginDataError, login }) => {
   const { data: orgData, isLoading: orgLoading } = useGetAllOrgQuery("", {
     refetchOnMountOrArgChange: true,
     skip: false,
@@ -54,16 +48,22 @@ const Login = ({
     orgYear: "",
     orgMebAgeFrom: "",
     orgMebAgeTo: "",
+    orgDisplayName: "",
     name: "",
     age: "",
     gender: "",
     email: "",
     phoneNo: "",
     password: "",
+    userAddress: "",
   });
   const [file, setFile] = useState(null);
   const [error, setError] = useState("");
   const [preview, setPreview] = useState("");
+
+  const [fileUser, setFileUser] = useState(null);
+  const [errorUser, setErrorUser] = useState("");
+  const [previewUser, setPreviewUser] = useState("");
 
   const [formError, setFormError] = useState({});
   const [formLoginError, setFormLoginError] = useState({});
@@ -92,6 +92,9 @@ const Login = ({
     // }
     if (!value.orgName) {
       error.orgName = "Organization name is required.";
+    }
+    if (!value.orgDisplayName) {
+      error.orgDisplayName = "Organization display name is required.";
     }
     if (!value.orgPlace) {
       error.orgPlace = "Organization place is required.";
@@ -184,6 +187,7 @@ const Login = ({
       var formData = new FormData();
       formData.append("json_data", JSON.stringify(formValue));
       formData.append("orgLogo", file);
+      formData.append("userImage", fileUser);
       createOrganization(formData);
     }
   };
@@ -191,7 +195,7 @@ const Login = ({
   useEffect(() => {
     if (isSuccess) {
       setOpenUser(false);
-      toast.success(data?.msg, {
+      toast.success(data?.data?.msg, {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,
@@ -215,7 +219,6 @@ const Login = ({
       });
     }
   }, [isSuccess, isError, data, createError, setOpen]);
-  useEffect(() => {});
 
   const handleLogin = async () => {
     setFormLoginError(validationLogin(formLogin));
@@ -227,33 +230,45 @@ const Login = ({
         password: formLogin?.password,
       };
       try {
-        await login(body).unwrap();
-        if (loginSuccess) {
-          toast.success(loginData?.msg, {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-        }
-        if (loginError) {
-          toast.error(loginDataError?.data?.msg, {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-        }
+        await login(body).then((res) => {
+          console.log(res);
+
+          if (res?.data) {
+            toast.success(res?.data?.msg, {
+              position: "top-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
+          if (res?.error?.status === 400) {
+            toast.error(res?.error?.data?.msg, {
+              position: "top-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
+        });
       } catch (err) {
-        toast.warning("Login failed!");
+        toast.error(loginDataError?.data?.msg, {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
       }
     }
   };
@@ -297,6 +312,7 @@ const Login = ({
                           orgYear: newList?.orgYear,
                           orgMebAgeFrom: newList?.orgMebAgeFrom,
                           orgMebAgeTo: newList?.orgMebAgeTo,
+                          orgDisplayName: newList?.orgDisplayName,
                         });
                         setPreview(newList?.orgLogo);
                       } else {
@@ -460,6 +476,12 @@ const Login = ({
           setFormError={setFormError}
           formError={formError}
           handleUserClick={handleUserClick}
+          fileUser={fileUser}
+          setFileUser={setFileUser}
+          previewUser={previewUser}
+          setPreviewUser={setPreviewUser}
+          errorUser={errorUser}
+          setErrorUser={setErrorUser}
         />
       </Drawer>
     </div>

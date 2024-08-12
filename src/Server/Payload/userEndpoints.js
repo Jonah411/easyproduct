@@ -12,4 +12,7 @@ export const userEndpoints = (builder) => ({
   getUser: builder.query({
     query: (id) => `/user/${id}`,
   }),
+  getSingleUser: builder.query({
+    query: (id) => `/auth/user/${id}`,
+  }),
 });

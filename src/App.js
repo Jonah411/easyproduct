@@ -7,7 +7,7 @@ import { useLoginMutation } from "./Server/Reducer/authApi";
 import Layout from "./pages/dashboard/Layout";
 import Profile from "./pages/Profile/Profile";
 import { useSelector } from "react-redux";
-import { selectOrg, selectToken } from "./Server/Reducer/authSlice";
+import { selectToken } from "./Server/Reducer/authSlice";
 
 const App = () => {
   const [
@@ -21,8 +21,6 @@ const App = () => {
   ] = useLoginMutation();
 
   const user = useSelector(selectToken);
-  const user1 = useSelector(selectOrg);
-  console.log(user1);
 
   const [showSidebar, setShowSidebar] = useState(true);
 
@@ -50,7 +48,6 @@ const App = () => {
         </Box>
       ) : (
         <div>
-          {" "}
           <Router>
             <Routes>
               <Route
