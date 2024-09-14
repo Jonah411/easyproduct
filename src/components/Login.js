@@ -231,8 +231,6 @@ const Login = ({ loginDataError, login }) => {
       };
       try {
         await login(body).then((res) => {
-          console.log(res);
-
           if (res?.data) {
             toast.success(res?.data?.msg, {
               position: "top-center",

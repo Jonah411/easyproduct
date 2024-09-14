@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+
 import Box from "@mui/material/Box";
 import Login from "./components/Login";
 import "./App.css";
-import { useLoginMutation } from "./Server/Reducer/authApi";
-import Layout from "./pages/dashboard/Layout";
-import Profile from "./pages/Profile/Profile";
-import { useSelector } from "react-redux";
-import { selectToken } from "./Server/Reducer/authSlice";
+import { useGetAllRollQuery, useLoginMutation } from "./Server/Reducer/authApi";
+import { useDispatch, useSelector } from "react-redux";
+import { createRollList, selectToken } from "./Server/Reducer/authSlice";
+import RouterService from "./pages/Router/RouterService";
+import { getDecryptData } from "./common/encrypt";
 
 const App = () => {
   const [
@@ -19,7 +19,18 @@ const App = () => {
       isError: loginError,
     },
   ] = useLoginMutation();
+  const { data: rollDataString } = useGetAllRollQuery("", {
+    refetchOnMountOrArgChange: true,
+    skip: false,
+  });
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    if (rollDataString) {
+      const rollDatas = getDecryptData(rollDataString?.data);
+      dispatch(createRollList(JSON.parse(rollDatas)));
+    }
+  }, [rollDataString, dispatch]);
   const user = useSelector(selectToken);
 
   const [showSidebar, setShowSidebar] = useState(true);
@@ -48,21 +59,10 @@ const App = () => {
         </Box>
       ) : (
         <div>
-          <Router>
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <Layout
-                    showSidebar={showSidebar}
-                    toggleSidebar={toggleSidebar}
-                  />
-                }
-              >
-                <Route path="profile" element={<Profile />} />
-              </Route>
-            </Routes>
-          </Router>
+          <RouterService
+            toggleSidebar={toggleSidebar}
+            showSidebar={showSidebar}
+          />
         </div>
       )}
     </div>

@@ -4,7 +4,7 @@
   left: 0;
   height: 100%;
   width: 250px; /* Adjust the width as needed */
-  background-color: #f8f9fa;
+  background-color: #72acd4;
   transition: transform 0.3s ease; /* Smooth transition */
   transform: translateX(-100%); /* Hide sidebar off-screen */
   z-index: 1000; /* Ensure sidebar is on top */
@@ -18,4 +18,26 @@
   position: absolute;
   top: 10px;
   right: 10px;
+}
+.custom-nav .nav-link {
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+  color: #f0f0f0; /* Default link color */
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.custom-nav .nav-link.active {
+  background-color: #f0f0f0; /* Background color for active link */
+  color: #72acd4; /* Text color for active link */
+  font-weight: bold;
+}
+
+.custom-nav .nav-link:hover {
+  background-color: #f0f0f0; /* Light background on hover */
+  color: #007bff; /* Text color on hover */
+}
+
+.custom-nav .nav-link {
+  border-radius: 0.25rem; /* Optional: rounded corners */
 }

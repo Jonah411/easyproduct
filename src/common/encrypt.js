@@ -17,7 +17,6 @@ export const getDecryptData = (encrypted) => {
     );
     return decrypted.toString(CryptoJS.enc.Utf8);
   } catch (error) {
-    console.error("Decryption failed:", error);
     throw new Error("Decryption failed");
   }
 };

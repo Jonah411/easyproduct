@@ -8,7 +8,10 @@
   width: -webkit-fill-available;
   height: 60vh;
 }
-
+.profilecomp {
+  height: 25vh;
+  background: "#3498db";
+}
 @media (max-width: 600px) {
   .login-image {
     width: -webkit-fill-available;
@@ -16,6 +19,9 @@
   }
   .login-box {
     height: 100vh;
+  }
+  .profilecomp {
+    height: 50vh;
   }
 }
 
@@ -27,6 +33,9 @@
   .login-box {
     height: 115vh;
   }
+  .profilecomp {
+    height: 50vh;
+  }
 }
 /* .app {
   display: flex;
@@ -34,15 +43,61 @@
 
 .content {
   flex-grow: 1;
+  height: auto;
+  overflow-y: auto;
 }
 
 @media (max-width: 768px) {
   .content {
     margin-left: 0;
   }
+  .profilecomp {
+    height: 50vh;
+  }
 }
 
 .align-center {
   display: flex;
   align-items: center; /* Centers items vertically */
+}
+
+.table-wrapper {
+  position: relative;
+  overflow-y: auto;
+  height: 73vh;
+  width: 100%;
+}
+
+.table-wrapper table {
+  border: 1px solid #ddd;
+  vertical-align: middle;
+  text-align: center;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* .table-wrapper table thead {
+  box-shadow: rgb(48, 63, 159) 0px 1px 3px, rgb(48, 63, 204) 0px 3px 2px;
+} */
+.table-wrapper table tr th,
+.table-wrapper table tr td {
+  border: 1px solid #ddd;
+  vertical-align: middle;
+  text-align: center;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.table-wrapper table thead tr th {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: lightblue;
+}
+
+.table-wrapper table tbody .fi-table {
+  position: sticky;
+  bottom: 0;
+  z-index: 1000;
+  background-color: lightblue;
 }

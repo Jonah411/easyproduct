@@ -16,7 +16,7 @@ export const authEndpoints = (builder) => ({
     onQueryStarted: async (user, { dispatch, queryFulfilled }) => {
       try {
         const { data } = await queryFulfilled;
-        console.log(await queryFulfilled, "user", data?.data?.token);
+
         dispatch(setToken(data?.data?.token));
         dispatch(setRefreshToken(data?.data?.refreshToken));
         dispatch(orgData(data?.data?.userData?.Organization));
