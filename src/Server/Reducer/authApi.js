@@ -70,4 +70,6 @@ export const {
   useGetAllMenuQuery,
   useUpdateAllRollMutation,
   useGetAllOrgUserQuery,
+  useGetAllOrgUserMemberQuery,
+  useCreateMemberMutation,
 } = authApi;

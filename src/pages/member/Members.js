@@ -4,10 +4,11 @@ import { selectOrg } from "../../Server/Reducer/authSlice";
 import { useGetAllOrgUserQuery } from "../../Server/Reducer/authApi";
 import { getDecryptData } from "../../common/encrypt";
 import { BASE_URL } from "../../common/ConstaltsVariables";
+import { useNavigate } from "react-router-dom";
 
-const Member = () => {
+const Members = () => {
   const orgData = useSelector(selectOrg);
-  const { data: orgDataString } = useGetAllOrgUserQuery(
+  const { data: memberDataString } = useGetAllOrgUserQuery(
     orgData ? orgData?._id : "",
     {
       refetchOnMountOrArgChange: true,
@@ -16,12 +17,12 @@ const Member = () => {
   );
   const [memberList, setMemberList] = useState([]);
   useEffect(() => {
-    if (orgDataString) {
-      const rollDatas = getDecryptData(orgDataString?.data);
+    if (memberDataString) {
+      const rollDatas = getDecryptData(memberDataString?.data);
       setMemberList(JSON.parse(rollDatas));
     }
-  }, [orgDataString]);
-  console.log(memberList);
+  }, [memberDataString]);
+  const navigate = useNavigate();
 
   return (
     <div className="p-2 mb-5">
@@ -39,7 +40,10 @@ const Member = () => {
                     <th>Ph.No</th>
                     <th>Email</th>
                     <th>Address</th>
+                    <th>Roll</th>
+                    <th>Members Count</th>
                     <th>Image</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -53,6 +57,8 @@ const Member = () => {
                           <td>{li.phoneNo}</td>
                           <td>{li.email}</td>
                           <td>{li.userAddress}</td>
+                          <td>{li.Roll?.rName}</td>
+                          <td>{li.memberCount}</td>
                           <td>
                             {
                               <img
@@ -63,13 +69,25 @@ const Member = () => {
                               />
                             }
                           </td>
+                          <td>
+                            <button
+                              className="btn btn-sm btn-success"
+                              onClick={() => {
+                                navigate("/app/members_group", {
+                                  state: li,
+                                });
+                              }}
+                            >
+                              Add/Update
+                            </button>
+                          </td>
                         </tr>
                       );
                     })
                   ) : (
                     <tr>
                       <td
-                        colSpan={7}
+                        colSpan={9}
                         className="text-center fw-bold text-danger"
                       >
                         No Data!.
@@ -86,4 +104,4 @@ const Member = () => {
   );
 };
 
-export default Member;
+export default Members;

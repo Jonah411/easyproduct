@@ -19,7 +19,6 @@ const CreateUser = ({
   formError,
   handleUserClick,
   setFileUser,
-  fileUser,
   setErrorUser,
   errorUser,
   setPreviewUser,

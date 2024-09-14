@@ -65,7 +65,7 @@ export default function Header({ toggleSidebar }) {
         onClick={(e) => {
           e.preventDefault();
           handleMenuClose();
-          navigate("/profile");
+          navigate("/app/profile");
         }}
       >
         Profile

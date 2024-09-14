@@ -52,7 +52,7 @@ const Menu = ({ refetch, setMenuList }) => {
     }
   }, [isSuccess, isError, data, createError, setMenuList]);
   return (
-    <div className="mt-5 p-2">
+    <div className="p-2">
       <div className="card">
         <div className="card-header">Menu Creation</div>
         <div className="card-body">

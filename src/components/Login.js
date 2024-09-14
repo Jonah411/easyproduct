@@ -182,8 +182,6 @@ const Login = ({ loginDataError, login }) => {
     const errorData = validationUser(formValue);
 
     if (Object.keys(errorData)?.length === 0) {
-      console.log(formValue);
-
       var formData = new FormData();
       formData.append("json_data", JSON.stringify(formValue));
       formData.append("orgLogo", file);
