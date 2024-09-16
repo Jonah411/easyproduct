@@ -1,10 +1,20 @@
 import { getDecryptData } from "../../common/encrypt";
 import { authApi } from "../Reducer/authApi";
-import { createMemberGroupList } from "../Reducer/authSlice";
+import { createMemberGroupList, createUserList } from "../Reducer/authSlice";
 
 export const memberRollEndpoints = (builder) => ({
   getAllOrgUser: builder.query({
     query: (id) => `/auth/user/org/${id}`,
+    async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+      try {
+        const { data } = await queryFulfilled;
+        const userDatas = getDecryptData(data?.data);
+        const groupList = JSON.parse(userDatas);
+        dispatch(createUserList(groupList));
+      } catch (err) {
+        console.error("Fetching rolls failed: ", err);
+      }
+    },
   }),
   getAllOrgUserMember: builder.query({
     query: (data) =>
@@ -55,6 +65,13 @@ export const memberRollEndpoints = (builder) => ({
   createMember: builder.mutation({
     query: (formData) => ({
       url: `/auth/member/create_member`,
+      method: "POST",
+      body: formData,
+    }),
+  }),
+  createUserMember: builder.mutation({
+    query: (formData) => ({
+      url: `/auth/user/createuser`,
       method: "POST",
       body: formData,
     }),

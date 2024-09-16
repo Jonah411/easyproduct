@@ -74,6 +74,7 @@ export default function Header({ toggleSidebar }) {
       <MenuItem
         onClick={() => {
           dispatch(logout());
+          navigate("/login");
           handleMenuClose();
         }}
       >

@@ -3,27 +3,29 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../common/ConstaltsVariables";
 import {
   useCreateMemberMutation,
-  //   useCreateMemberMutation,
   useGetAllOrgUserMemberQuery,
 } from "../../Server/Reducer/authApi";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createMemberGroupList,
   getMemberGroupList,
+  selectRoll,
 } from "../../Server/Reducer/authSlice";
 import { Drawer } from "@mui/material";
 import CreateUser from "../../components/CreateUser";
 import { CommonAlert } from "../../common/CommonAlert";
 import { getDecryptData } from "../../common/encrypt";
+import CommonPagination from "../../common/CommonPagination";
 
 const MembersGroup = () => {
   const location = useLocation();
   const [userData, setUserData] = useState();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const rollData = useSelector(selectRoll);
   useGetAllOrgUserMemberQuery(userData ? userData : "", {
     refetchOnMountOrArgChange: true,
-    skip: false,
+    skip: !userData?._id,
   });
   const [createMember, { data, error: createError, isSuccess, isError }] =
     useCreateMemberMutation();
@@ -90,7 +92,6 @@ const MembersGroup = () => {
       var formData = new FormData();
       formData.append("json_data", JSON.stringify(newData));
       formData.append("memberImage", fileUser);
-      console.log(formValue, fileUser, userData);
       createMember(formData);
     }
   };
@@ -108,8 +109,6 @@ const MembersGroup = () => {
     }
   }, [memberGroupDataString]);
   useEffect(() => {
-    console.log(isError, createError, data);
-
     if (isSuccess) {
       const memberDatas = getDecryptData(data?.data);
       const groupList = JSON.parse(memberDatas);
@@ -121,6 +120,17 @@ const MembersGroup = () => {
       CommonAlert(createError?.data?.msg, "error");
     }
   }, [isSuccess, isError, data, createError, setOpenUser, dispatch]);
+
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const getCurrentPageItems = () => {
+    return rowsPerPage > 0
+      ? memberGroupList.slice(
+          page * rowsPerPage,
+          page * rowsPerPage + rowsPerPage
+        )
+      : memberGroupList;
+  };
   return (
     <div>
       <div className="p-2">
@@ -196,16 +206,16 @@ const MembersGroup = () => {
               <h6 className="fw-bold">Memer List</h6>
               <button
                 className="btn btn-sm btn-primary"
+                hidden={rollData?.fAccess === "R"}
                 onClick={() => {
                   setOpenUser(true);
                 }}
               >
-                Add
+                Add Member
               </button>
             </div>
           </div>
           <div className="card-body m-0 p-0">
-            {" "}
             <div className="table-responsive">
               <div className="table-responsive table-wrapper">
                 <table className="table table-bordered table-hover wo-table m-0">
@@ -219,12 +229,12 @@ const MembersGroup = () => {
                       <th>Address</th>
                       <th>Roll</th>
                       <th>Image</th>
-                      <th>Action</th>
+                      {rollData?.fAccess !== "R" && <th>Action</th>}
                     </tr>
                   </thead>
                   <tbody>
                     {memberGroupList?.length !== 0 ? (
-                      memberGroupList?.map((li) => {
+                      getCurrentPageItems()?.map((li) => {
                         return (
                           <tr key={li?._id}>
                             <td>{li.name}</td>
@@ -244,11 +254,13 @@ const MembersGroup = () => {
                                 />
                               }
                             </td>
-                            <td>
-                              <button className="btn btn-sm btn-success">
-                                Update
-                              </button>
-                            </td>
+                            {rollData?.fAccess !== "R" && (
+                              <td>
+                                <button className="btn btn-sm btn-success">
+                                  Update
+                                </button>
+                              </td>
+                            )}
                           </tr>
                         );
                       })
@@ -266,6 +278,15 @@ const MembersGroup = () => {
                 </table>
               </div>
             </div>
+          </div>
+          <div className="cart-footer border">
+            <CommonPagination
+              items={memberGroupList}
+              page={page}
+              setPage={setPage}
+              rowsPerPage={rowsPerPage}
+              setRowsPerPage={setRowsPerPage}
+            />
           </div>
         </div>
       </div>
@@ -293,6 +314,8 @@ const MembersGroup = () => {
           setPreviewUser={setPreviewUser}
           errorUser={errorUser}
           setErrorUser={setErrorUser}
+          title="Create"
+          subtitle="Member"
         />
       </Drawer>
     </div>

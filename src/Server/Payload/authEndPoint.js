@@ -16,6 +16,7 @@ export const authEndpoints = (builder) => ({
     onQueryStarted: async (user, { dispatch, queryFulfilled }) => {
       try {
         const { data } = await queryFulfilled;
+        console.log(data, "datadata");
 
         dispatch(setToken(data?.data?.token));
         dispatch(setRefreshToken(data?.data?.refreshToken));
@@ -23,7 +24,9 @@ export const authEndpoints = (builder) => ({
         dispatch(rollData(data?.data?.userData?.Roll));
         dispatch(
           userData({
-            _id: data?.data?.userData?._id,
+            _id: data?.data?.userData?.User
+              ? data?.data?.userData?.User
+              : data?.data?.userData?._id,
             name: data?.data?.userData?.name,
             email: data?.data?.userData?.email,
             gender: data?.data?.userData?.gender,

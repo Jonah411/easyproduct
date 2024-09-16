@@ -23,6 +23,8 @@ const CreateUser = ({
   errorUser,
   setPreviewUser,
   previewUser,
+  title,
+  subtitle,
 }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -51,7 +53,9 @@ const CreateUser = ({
   return (
     <div>
       <div className="text-center mt-2">
-        <h6>Create Organization</h6>
+        <h6>
+          {title} {subtitle}
+        </h6>
       </div>
       <div className=" p-2">
         <FormControl fullWidth className="mt-2">
@@ -208,7 +212,7 @@ const CreateUser = ({
               handleUserClick();
             }}
           >
-            Create User
+            {title} {subtitle}
           </Button>
         </FormControl>
         <FormControl fullWidth className="mt-4">

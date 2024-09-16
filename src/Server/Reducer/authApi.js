@@ -72,4 +72,5 @@ export const {
   useGetAllOrgUserQuery,
   useGetAllOrgUserMemberQuery,
   useCreateMemberMutation,
+  useCreateUserMemberMutation,
 } = authApi;

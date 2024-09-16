@@ -6,11 +6,34 @@ import Dashboard from "../home/Dashboard";
 import OrgType from "../orgType/OrgType";
 import Members from "../member/Members";
 import MembersGroup from "../member/MembersGroup";
+import Login from "../../components/Login";
+import { useLoginMutation } from "../../Server/Reducer/authApi";
 
 const RouterService = ({ toggleSidebar, showSidebar }) => {
+  const [
+    login,
+    {
+      data: loginData,
+      isSuccess: loginSuccess,
+      error: loginDataError,
+      isError: loginError,
+    },
+  ] = useLoginMutation();
   return (
     <Router>
       <Routes>
+        <Route
+          path="/login"
+          element={
+            <Login
+              login={login}
+              loginData={loginData}
+              loginSuccess={loginSuccess}
+              loginDataError={loginDataError}
+              loginError={loginError}
+            />
+          }
+        />
         <Route
           path="/"
           element={

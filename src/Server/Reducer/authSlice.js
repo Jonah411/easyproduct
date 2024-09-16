@@ -10,6 +10,7 @@ const authSlice = createSlice({
     roll: JSON.parse(localStorage.getItem("roll")) || null,
     rollList: JSON.parse(localStorage.getItem("rollList")) || [],
     memberGroupList: JSON.parse(localStorage.getItem("memberGroupList")) || [],
+    userList: JSON.parse(localStorage.getItem("userList")) || [],
   },
   reducers: {
     setToken: (state, action) => {
@@ -40,6 +41,10 @@ const authSlice = createSlice({
       state.memberGroupList = action.payload;
       localStorage.setItem("memberGroupList", JSON.stringify(action.payload));
     },
+    createUserList: (state, action) => {
+      state.userList = action.payload;
+      localStorage.setItem("userList", JSON.stringify(action.payload));
+    },
     logout: (state) => {
       state.token = null;
       state.refreshToken = null;
@@ -50,6 +55,7 @@ const authSlice = createSlice({
       localStorage.removeItem("roll");
       localStorage.removeItem("rollList");
       localStorage.removeItem("memberGroupList");
+      localStorage.removeItem("userList");
     },
   },
 });
@@ -63,6 +69,7 @@ export const {
   rollData,
   createRollList,
   createMemberGroupList,
+  createUserList,
 } = authSlice.actions;
 export const selectToken = (state) => state.auth.token;
 export const selectRefreshToken = (state) => state.auth.refreshToken;
@@ -71,4 +78,5 @@ export const selectOrg = (state) => state.auth.org;
 export const selectRoll = (state) => state.auth.roll;
 export const getRollList = (state) => state.auth.rollList;
 export const getMemberGroupList = (state) => state.auth.memberGroupList;
+export const getUserList = (state) => state.auth.userList;
 export default authSlice.reducer;

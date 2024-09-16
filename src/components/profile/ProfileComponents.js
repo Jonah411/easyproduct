@@ -12,11 +12,15 @@ import RollAccess from "../Menu/RollAccess";
 
 const ProfileComponents = () => {
   const userId = useSelector(selectUser);
+  console.log(userId);
 
-  const { data: userDataString } = useGetSingleUserQuery(userId?._id, {
-    refetchOnMountOrArgChange: true,
-    skip: false,
-  });
+  const { data: userDataString } = useGetSingleUserQuery(
+    userId?.User ? userId?.User : userId?._id,
+    {
+      refetchOnMountOrArgChange: true,
+      skip: false,
+    }
+  );
   const { data: menuDataString, refetch } = useGetAllMenuQuery("", {
     refetchOnMountOrArgChange: true,
     skip: false,

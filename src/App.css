@@ -101,3 +101,25 @@
   z-index: 1000;
   background-color: lightblue;
 }
+/* styles.css */
+.pagination-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px; /* Adjust as needed */
+}
+
+.pagination-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Adjust spacing between icons */
+}
+
+.pagination-icon {
+  cursor: pointer;
+  font-size: 1.25rem; /* Adjust icon size */
+  color: #007bff; /* Bootstrap primary color */
+}
+
+.pagination-icon:hover {
+  color: #0056b3; /* Darker shade on hover */
+}
