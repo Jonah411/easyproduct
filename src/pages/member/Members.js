@@ -133,7 +133,7 @@ const Members = () => {
             <h5 className="fw-bold">User List</h5>
             <button
               className="btn btn-sm btn-primary"
-              hidden={rollData?.fAccess !== "F"}
+              hidden={rollData?.rAccess !== "F"}
               onClick={() => {
                 setOpenUser(true);
               }}
@@ -158,8 +158,8 @@ const Members = () => {
                     <th>Members Count</th>
                     <th>Image</th>
                     <th>Action</th>
-                    {/* {(rollData?.fAccess === "F" ||
-                      rollData?.fAccess === "H") && } */}
+                    {/* {(rollData?.rAccess === "F" ||
+                      rollData?.rAccess === "H") && } */}
                   </tr>
                 </thead>
                 <tbody>
@@ -185,8 +185,8 @@ const Members = () => {
                               />
                             }
                           </td>
-                          {/* {(rollData?.fAccess === "F" ||
-                            rollData?.fAccess === "H") && (
+                          {/* {(rollData?.rAccess === "F" ||
+                            rollData?.rAccess === "H") && (
                            
                           )} */}
                           <td>

@@ -94,7 +94,7 @@ const ProfileComponents = () => {
           </div>
         </div>
       </div>
-      {userData?.Roll?.fAccess === "F" && (
+      {userData?.Roll?.rAccess === "F" && (
         <div>
           <Menu refetch={refetch} setMenuList={setMenuList} />
           <RollAccess

@@ -8,6 +8,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import {
   createMemberGroupList,
+  createRollList,
   getMemberGroupList,
   selectRoll,
 } from "../../Server/Reducer/authSlice";
@@ -112,7 +113,8 @@ const MembersGroup = () => {
     if (isSuccess) {
       const memberDatas = getDecryptData(data?.data);
       const groupList = JSON.parse(memberDatas);
-      dispatch(createMemberGroupList(groupList));
+      dispatch(createMemberGroupList(groupList?.memberDataList));
+      dispatch(createRollList(groupList?.rollList));
       setOpenUser(false);
       CommonAlert(data?.msg, "success");
     }
@@ -124,8 +126,10 @@ const MembersGroup = () => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const getCurrentPageItems = () => {
+    console.log(memberGroupList, "memberGroupList");
+
     return rowsPerPage > 0
-      ? memberGroupList.slice(
+      ? memberGroupList?.slice(
           page * rowsPerPage,
           page * rowsPerPage + rowsPerPage
         )
@@ -206,7 +210,7 @@ const MembersGroup = () => {
               <h6 className="fw-bold">Memer List</h6>
               <button
                 className="btn btn-sm btn-primary"
-                hidden={rollData?.fAccess === "R"}
+                hidden={rollData?.rAccess === "R"}
                 onClick={() => {
                   setOpenUser(true);
                 }}
@@ -229,7 +233,7 @@ const MembersGroup = () => {
                       <th>Address</th>
                       <th>Roll</th>
                       <th>Image</th>
-                      {rollData?.fAccess !== "R" && <th>Action</th>}
+                      {rollData?.rAccess !== "R" && <th>Action</th>}
                     </tr>
                   </thead>
                   <tbody>
@@ -254,7 +258,7 @@ const MembersGroup = () => {
                                 />
                               }
                             </td>
-                            {rollData?.fAccess !== "R" && (
+                            {rollData?.rAccess !== "R" && (
                               <td>
                                 <button className="btn btn-sm btn-success">
                                   Update

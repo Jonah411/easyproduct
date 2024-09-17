@@ -25,14 +25,18 @@ import CreateOrganization from "./CreateOrganization";
 import CreateUser from "./CreateUser";
 import { useNavigate } from "react-router-dom";
 import { CommonAlert } from "../common/CommonAlert";
+import { useSelector } from "react-redux";
+import { getOrgList } from "../Server/Reducer/authSlice";
 
 const Login = ({ loginDataError, login }) => {
-  const { data: orgData, isLoading: orgLoading } = useGetAllOrgQuery("", {
+  const [createOrganization, { data, error: createError, isSuccess, isError }] =
+    useCreateOrganizationMutation();
+  const orgData = useSelector(getOrgList);
+  const { isLoading: orgLoading } = useGetAllOrgQuery("", {
     refetchOnMountOrArgChange: true,
     skip: false,
   });
-  const [createOrganization, { data, error: createError, isSuccess, isError }] =
-    useCreateOrganizationMutation();
+
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [openUser, setOpenUser] = useState(false);
@@ -196,10 +200,10 @@ const Login = ({ loginDataError, login }) => {
   useEffect(() => {
     if (isSuccess) {
       setOpenUser(false);
-      CommonAlert(data?.data?.msg, "success");
+      CommonAlert(data?.msg, "success");
     }
     if (isError) {
-      CommonAlert(createError?.data?.msg, "error");
+      CommonAlert(createError?.msg, "error");
     }
   }, [isSuccess, isError, data, createError, setOpen]);
 
@@ -261,7 +265,7 @@ const Login = ({ loginDataError, login }) => {
                       defaultValue=""
                       onChange={(e) => {
                         setFormLogin({ ...formLogin, orgName: e.target.value });
-                        const newList = orgData?.data?.find(
+                        const newList = orgData?.find(
                           (li) => li?._id === e.target.value
                         );
                         if (newList) {
@@ -297,7 +301,7 @@ const Login = ({ loginDataError, login }) => {
                       }}
                     >
                       <MenuItem value="1">Select</MenuItem>
-                      {orgData?.data.map((option) => (
+                      {orgData.map((option) => (
                         <MenuItem key={option?._id} value={option?._id}>
                           {option?.orgName}
                         </MenuItem>

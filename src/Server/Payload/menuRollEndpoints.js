@@ -10,7 +10,7 @@ export const menuRollEndpoints = (builder) => ({
     }),
   }),
   getAllRoll: builder.query({
-    query: () => "/auth/menu/getallrolls",
+    query: (orgId) => `/auth/menu/getallrolls/${orgId}`,
     async onQueryStarted(arg, { dispatch, queryFulfilled }) {
       try {
         const { data } = await queryFulfilled;

@@ -2,15 +2,21 @@ import React, { useEffect, useState } from "react";
 
 import "./App.css";
 import { useGetAllRollQuery } from "./Server/Reducer/authApi";
-import { useDispatch } from "react-redux";
-import { createRollList } from "./Server/Reducer/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  createRollList,
+  selectOrg,
+  selectToken,
+} from "./Server/Reducer/authSlice";
 import RouterService from "./pages/Router/RouterService";
 import { getDecryptData } from "./common/encrypt";
 
 const App = () => {
-  const { data: rollDataString } = useGetAllRollQuery("", {
-    refetchOnMountOrArgChange: true,
-    skip: false,
+  const user = useSelector(selectToken);
+  const org = useSelector(selectOrg);
+  const { data: rollDataString } = useGetAllRollQuery(org?._id, {
+    refetchOnMountOrArgChange: org?._id ? true : false,
+    skip: !user,
   });
   const dispatch = useDispatch();
 

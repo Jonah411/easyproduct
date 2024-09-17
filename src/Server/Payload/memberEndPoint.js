@@ -39,6 +39,7 @@ export const memberRollEndpoints = (builder) => ({
         };
         const rollDatas = getDecryptData(data?.data);
         const groupList = JSON.parse(rollDatas);
+        console.log(groupList);
         if (groupList?.length === 0) {
           var formData = new FormData();
           formData.append("json_data", JSON.stringify(user));

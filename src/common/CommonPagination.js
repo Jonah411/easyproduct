@@ -12,10 +12,10 @@ const CommonPagination = ({
   setRowsPerPage,
   items,
 }) => {
-  const totalPages = Math.ceil(items.length / rowsPerPage);
+  const totalPages = Math.ceil(items?.length / rowsPerPage);
 
   const startIndex = page * rowsPerPage;
-  const endIndex = Math.min(startIndex + rowsPerPage, items.length);
+  const endIndex = Math.min(startIndex + rowsPerPage, items?.length);
   const currentItemsCount = endIndex - startIndex;
 
   const handleChangePage = (event, newPage) => {
@@ -49,7 +49,7 @@ const CommonPagination = ({
         <div className="me-2">
           <span>
             Showing {currentItemsCount}{" "}
-            {currentItemsCount === 1 ? "item" : "items"} of {items.length}
+            {currentItemsCount === 1 ? "item" : "items"} of {items?.length}
           </span>
         </div>
 
