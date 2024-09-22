@@ -73,4 +73,5 @@ export const {
   useGetAllOrgUserMemberQuery,
   useCreateMemberMutation,
   useCreateUserMemberMutation,
+  useGetRoutesDataQuery,
 } = authApi;

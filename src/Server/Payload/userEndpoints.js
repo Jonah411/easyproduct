@@ -1,4 +1,5 @@
-import { createOrgList } from "../Reducer/authSlice";
+import { getDecryptData } from "../../common/encrypt";
+import { createOrgList, createRouteList } from "../Reducer/authSlice";
 
 export const userEndpoints = (builder) => ({
   getAllOrg: builder.query({
@@ -34,5 +35,25 @@ export const userEndpoints = (builder) => ({
   }),
   getSingleUser: builder.query({
     query: (id) => `/auth/user/${id}`,
+  }),
+  getRoutesData: builder.query({
+    query: (id) => `/auth/components/${id}`,
+    async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+      try {
+        const { data } = await queryFulfilled;
+
+        if (data?.isSuccess) {
+          const { data } = await queryFulfilled;
+          const routesDatas = getDecryptData(data?.data);
+          console.log(JSON.parse(routesDatas));
+
+          dispatch(createRouteList(JSON.parse(routesDatas)));
+        } else {
+          dispatch(createRouteList([]));
+        }
+      } catch (err) {
+        console.error("Fetching rolls failed: ", err);
+      }
+    },
   }),
 });

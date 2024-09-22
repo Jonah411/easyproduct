@@ -122,19 +122,17 @@ const MembersGroup = () => {
       CommonAlert(createError?.data?.msg, "error");
     }
   }, [isSuccess, isError, data, createError, setOpenUser, dispatch]);
-
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const getCurrentPageItems = () => {
-    console.log(memberGroupList, "memberGroupList");
-
     return rowsPerPage > 0
-      ? memberGroupList?.slice(
+      ? memberGroupList.slice(
           page * rowsPerPage,
           page * rowsPerPage + rowsPerPage
         )
       : memberGroupList;
   };
+
   return (
     <div>
       <div className="p-2">

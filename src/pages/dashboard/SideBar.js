@@ -20,11 +20,11 @@ const Sidebar = ({ showSidebar }) => {
       <Nav className="flex-column custom-nav">
         {menuList?.map((menu) => (
           <NavLink
-            key={menu._id}
-            to={menu.mLocationPath}
+            key={menu?._id}
+            to={menu?.mLocationPath}
             className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
           >
-            {menu.mName}
+            {menu?.mName}
           </NavLink>
         ))}
       </Nav>

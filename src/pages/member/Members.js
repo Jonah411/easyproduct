@@ -50,8 +50,8 @@ const Members = () => {
     userAddress: "",
   });
 
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const getCurrentPageItems = () => {
     return rowsPerPage > 0
       ? memberList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)

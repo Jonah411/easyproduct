@@ -53,8 +53,8 @@ const Login = ({ loginDataError, login }) => {
     orgMembersCount: "",
     orgDescription: "",
     orgYear: "",
-    orgMebAgeFrom: "",
-    orgMebAgeTo: "",
+    // orgMebAgeFrom: "",
+    // orgMebAgeTo: "",
     orgDisplayName: "",
     name: "",
     age: "",
@@ -122,16 +122,16 @@ const Login = ({ loginDataError, login }) => {
     } else if (isNaN(value.orgYear)) {
       error.orgYear = "Organization year must be a number.";
     }
-    if (!value.orgMebAgeFrom) {
-      error.orgMebAgeFrom = "Member age from is required.";
-    } else if (isNaN(value.orgMebAgeFrom)) {
-      error.orgMebAgeFrom = "Member age from must be a number.";
-    }
-    if (!value.orgMebAgeTo) {
-      error.orgMebAgeTo = "Member age to is required.";
-    } else if (isNaN(value.orgMebAgeTo)) {
-      error.orgMebAgeTo = "Member age to must be a number.";
-    }
+    // if (!value.orgMebAgeFrom) {
+    //   error.orgMebAgeFrom = "Member age from is required.";
+    // } else if (isNaN(value.orgMebAgeFrom)) {
+    //   error.orgMebAgeFrom = "Member age from must be a number.";
+    // }
+    // if (!value.orgMebAgeTo) {
+    //   error.orgMebAgeTo = "Member age to is required.";
+    // } else if (isNaN(value.orgMebAgeTo)) {
+    //   error.orgMebAgeTo = "Member age to must be a number.";
+    // }
 
     return error;
   };
@@ -278,8 +278,8 @@ const Login = ({ loginDataError, login }) => {
                             orgMembersCount: newList?.orgMembersCount,
                             orgDescription: newList?.orgDescription,
                             orgYear: newList?.orgYear,
-                            orgMebAgeFrom: newList?.orgMebAgeFrom,
-                            orgMebAgeTo: newList?.orgMebAgeTo,
+                            // orgMebAgeFrom: newList?.orgMebAgeFrom,
+                            // orgMebAgeTo: newList?.orgMebAgeTo,
                             orgDisplayName: newList?.orgDisplayName,
                           });
                           setPreview(newList?.orgLogo);
@@ -293,8 +293,8 @@ const Login = ({ loginDataError, login }) => {
                             orgMembersCount: "",
                             orgDescription: "",
                             orgYear: "",
-                            orgMebAgeFrom: "",
-                            orgMebAgeTo: "",
+                            // orgMebAgeFrom: "",
+                            // orgMebAgeTo: "",
                           });
                           setPreview("");
                         }
@@ -455,7 +455,7 @@ const Login = ({ loginDataError, login }) => {
             errorUser={errorUser}
             setErrorUser={setErrorUser}
             title="Create"
-            subtitle="Member"
+            subtitle="User"
           />
         </Drawer>
       </div>

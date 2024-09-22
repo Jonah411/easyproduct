@@ -2,9 +2,18 @@ import React, { useEffect, useState } from "react";
 import { CommonAlert } from "../../common/CommonAlert";
 import { useCreateMenuMutation } from "../../Server/Reducer/authApi";
 import { getDecryptData } from "../../common/encrypt";
+import { useSelector } from "react-redux";
+import {
+  getMenuList,
+  getRouteList,
+  selectOrg,
+} from "../../Server/Reducer/authSlice";
+import Select from "react-select";
 
 const Menu = ({ refetch, setMenuList }) => {
-  // const dispatch = useDispatch();
+  const orgId = useSelector(selectOrg);
+  const routeList = useSelector(getRouteList);
+  const menuDataString = useSelector(getMenuList);
   const [createmenu, { data, error: createError, isSuccess, isError }] =
     useCreateMenuMutation();
   const [formMenu, setFormMenu] = useState({
@@ -13,7 +22,21 @@ const Menu = ({ refetch, setMenuList }) => {
     mIcon: "",
   });
   const [formError, setFormError] = useState({});
+  const [selectMName, setSelectMName] = useState([]);
+  const [selectMlocationPath, setSelectMLocationPath] = useState([]);
 
+  useEffect(() => {
+    if (menuDataString) {
+      console.log(menuDataString, routeList);
+
+      const filteredRoutes = routeList.filter(
+        (route) =>
+          !menuDataString.some((menuItem) => menuItem.mName === route.cName)
+      );
+
+      setSelectMName(filteredRoutes);
+    }
+  }, [menuDataString, routeList]);
   const handleMenuChange = (e) => {
     const { name, value } = e.target;
     setFormMenu({ ...formMenu, [name]: value });
@@ -31,7 +54,7 @@ const Menu = ({ refetch, setMenuList }) => {
       error.mIcon = "Menu Icon Is Required!.";
     }
     if (Object.keys(error)?.length === 0) {
-      createmenu(formMenu);
+      createmenu({ ...formMenu, mOrg: orgId?._id });
 
       refetch();
     } else {
@@ -51,6 +74,7 @@ const Menu = ({ refetch, setMenuList }) => {
       CommonAlert(createError?.data?.msg, "error");
     }
   }, [isSuccess, isError, data, createError, setMenuList]);
+
   return (
     <div className="p-2">
       <div className="card">
@@ -58,7 +82,23 @@ const Menu = ({ refetch, setMenuList }) => {
         <div className="card-body">
           <div className="row">
             <div className="col-12 col-sm-12 col-md-6 col-lg-3">
-              <input
+              <Select
+                className="form-control "
+                // value={selectMName}
+                onChange={(e) => {
+                  setFormMenu({ ...formMenu, mName: e[0]?.cName });
+                  setSelectMLocationPath(e);
+                }}
+                options={selectMName?.map((li) => {
+                  return {
+                    ...li,
+                    label: li?.cName,
+                    value: li?.cName,
+                  };
+                })}
+                isMulti
+              />
+              {/* <input
                 className="form-control form-control-sm"
                 placeholder="Menu Name"
                 name="mName"
@@ -68,10 +108,27 @@ const Menu = ({ refetch, setMenuList }) => {
                     : "",
                 }}
                 onChange={handleMenuChange}
-              />
+              /> */}
             </div>
             <div className="col-12 col-sm-12 col-md-6 col-lg-3">
-              <input
+              <Select
+                className="form-control "
+                // value={selectMlocationPath}
+                onChange={(e) =>
+                  setFormMenu({
+                    ...formMenu,
+                    mLocationPath: e?.cLocationPath,
+                  })
+                }
+                options={selectMlocationPath?.map((li) => {
+                  return {
+                    ...li,
+                    label: li?.cLocationPath,
+                    value: li?.cLocationPath,
+                  };
+                })}
+              />
+              {/* <input
                 className="form-control form-control-sm"
                 placeholder="Menu Location"
                 name="mLocationPath"
@@ -81,11 +138,11 @@ const Menu = ({ refetch, setMenuList }) => {
                     ? !formMenu?.mLocationPath && "red 1px solid"
                     : "",
                 }}
-              />
+              /> */}
             </div>
             <div className="col-12 col-sm-12 col-md-6 col-lg-3">
               <input
-                className="form-control form-control-sm"
+                className="form-control "
                 placeholder="Menu Icon"
                 name="mIcon"
                 onChange={handleMenuChange}

@@ -1,5 +1,5 @@
 import { getDecryptData } from "../../common/encrypt";
-import { createRollList } from "../Reducer/authSlice";
+import { createMenuList, createRollList } from "../Reducer/authSlice";
 
 export const menuRollEndpoints = (builder) => ({
   createMenu: builder.mutation({
@@ -8,6 +8,16 @@ export const menuRollEndpoints = (builder) => ({
       method: "POST",
       body: formData,
     }),
+    async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+      try {
+        const { data } = await queryFulfilled;
+        const menuDatas = getDecryptData(data?.data);
+
+        dispatch(createMenuList(JSON.parse(menuDatas)));
+      } catch (err) {
+        console.error("Fetching rolls failed: ", err);
+      }
+    },
   }),
   getAllRoll: builder.query({
     query: (orgId) => `/auth/menu/getallrolls/${orgId}`,
@@ -23,7 +33,17 @@ export const menuRollEndpoints = (builder) => ({
     },
   }),
   getAllMenu: builder.query({
-    query: () => "/auth/menu/getallmenus",
+    query: (orgId) => `/auth/menu/getallmenus/${orgId}`,
+    async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+      try {
+        const { data } = await queryFulfilled;
+        const menuDatas = getDecryptData(data?.data);
+
+        dispatch(createMenuList(JSON.parse(menuDatas)));
+      } catch (err) {
+        console.error("Fetching rolls failed: ", err);
+      }
+    },
   }),
   UpdateAllRoll: builder.mutation({
     query: (formData) => ({

@@ -12,6 +12,8 @@ const authSlice = createSlice({
     memberGroupList: JSON.parse(localStorage.getItem("memberGroupList")) || [],
     orgList: JSON.parse(localStorage.getItem("orgList")) || [],
     userList: JSON.parse(localStorage.getItem("userList")) || [],
+    routeList: JSON.parse(localStorage.getItem("routeList")) || [],
+    menuList: JSON.parse(localStorage.getItem("menuList")) || [],
   },
   reducers: {
     setToken: (state, action) => {
@@ -50,9 +52,26 @@ const authSlice = createSlice({
       state.userList = action.payload;
       localStorage.setItem("userList", JSON.stringify(action.payload));
     },
+    createRouteList: (state, action) => {
+      state.routeList = action.payload;
+      localStorage.setItem("routeList", JSON.stringify(action.payload));
+    },
+    createMenuList: (state, action) => {
+      state.menuList = action.payload;
+      localStorage.setItem("menuList", JSON.stringify(action.payload));
+    },
     logout: (state) => {
       state.token = null;
       state.refreshToken = null;
+      state.org = null;
+      state.user = null;
+      state.roll = null;
+      state.rollList = [];
+      state.memberGroupList = [];
+      state.userList = [];
+      state.orgList = [];
+      state.routeList = [];
+      state.menuList = [];
       localStorage.removeItem("token");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("org");
@@ -62,6 +81,8 @@ const authSlice = createSlice({
       localStorage.removeItem("memberGroupList");
       localStorage.removeItem("userList");
       localStorage.removeItem("orgList");
+      localStorage.removeItem("routeList");
+      localStorage.removeItem("menuList");
     },
   },
 });
@@ -77,6 +98,8 @@ export const {
   createMemberGroupList,
   createUserList,
   createOrgList,
+  createRouteList,
+  createMenuList,
 } = authSlice.actions;
 export const selectToken = (state) => state.auth.token;
 export const selectRefreshToken = (state) => state.auth.refreshToken;
@@ -87,4 +110,6 @@ export const getRollList = (state) => state.auth.rollList;
 export const getMemberGroupList = (state) => state.auth.memberGroupList;
 export const getUserList = (state) => state.auth.userList;
 export const getOrgList = (state) => state.auth.orgList;
+export const getRouteList = (state) => state.auth.routeList;
+export const getMenuList = (state) => state.auth.menuList;
 export default authSlice.reducer;

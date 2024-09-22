@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 
 import "./App.css";
-import { useGetAllRollQuery } from "./Server/Reducer/authApi";
+import {
+  useGetAllRollQuery,
+  useGetRoutesDataQuery,
+} from "./Server/Reducer/authApi";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createRollList,
@@ -18,6 +21,12 @@ const App = () => {
     refetchOnMountOrArgChange: org?._id ? true : false,
     skip: !user,
   });
+
+  useGetRoutesDataQuery(org?._id, {
+    refetchOnMountOrArgChange: org?._id ? true : false,
+    skip: !user,
+  });
+
   const dispatch = useDispatch();
 
   useEffect(() => {

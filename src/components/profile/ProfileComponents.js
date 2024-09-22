@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { selectUser } from "../../Server/Reducer/authSlice";
+import { selectOrg, selectUser } from "../../Server/Reducer/authSlice";
 import {
   useGetAllMenuQuery,
   useGetSingleUserQuery,
@@ -12,18 +12,19 @@ import RollAccess from "../Menu/RollAccess";
 
 const ProfileComponents = () => {
   const userId = useSelector(selectUser);
+  const orgId = useSelector(selectOrg);
   console.log(userId);
 
   const { data: userDataString } = useGetSingleUserQuery(
     userId?.User ? userId?.User : userId?._id,
     {
       refetchOnMountOrArgChange: true,
-      skip: false,
+      skip: !userId?._id,
     }
   );
-  const { data: menuDataString, refetch } = useGetAllMenuQuery("", {
+  const { data: menuDataString, refetch } = useGetAllMenuQuery(orgId?._id, {
     refetchOnMountOrArgChange: true,
-    skip: false,
+    skip: !orgId?._id,
   });
   const [userData, setUserData] = useState({});
   const [menuList, setMenuList] = useState([]);
