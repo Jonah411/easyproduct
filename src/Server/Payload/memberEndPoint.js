@@ -1,6 +1,11 @@
 import { getDecryptData } from "../../common/encrypt";
 import { authApi } from "../Reducer/authApi";
-import { createMemberGroupList, createUserList } from "../Reducer/authSlice";
+import {
+  createMemberGroupList,
+  createMemberList,
+  createOrgPositionList,
+  createUserList,
+} from "../Reducer/authSlice";
 
 export const memberRollEndpoints = (builder) => ({
   getAllOrgUser: builder.query({
@@ -62,12 +67,98 @@ export const memberRollEndpoints = (builder) => ({
       }
     },
   }),
+  getAllOrgMember: builder.query({
+    query: (data) => `/auth/member/get_member/${data}`,
+    async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+      try {
+        const { data } = await queryFulfilled;
+        const userDatas = getDecryptData(data?.data);
+        const groupList = JSON.parse(userDatas);
+        dispatch(createMemberList(groupList));
+      } catch (err) {
+        console.error("Fetching rolls failed: ", err);
+      }
+    },
+  }),
   createMember: builder.mutation({
     query: (formData) => ({
       url: `/auth/member/create_member`,
       method: "POST",
       body: formData,
     }),
+    async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+      try {
+        const { data } = await queryFulfilled;
+        const memberDatas = getDecryptData(data?.data);
+        const groupList = JSON.parse(memberDatas);
+        dispatch(createMemberGroupList(groupList));
+      } catch (err) {
+        console.error("Fetching rolls failed: ", err);
+      }
+    },
+  }),
+  createPosition: builder.mutation({
+    query: (formData) => ({
+      url: `/auth/position/createposition`,
+      method: "POST",
+      body: formData,
+    }),
+    async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+      try {
+        const { data } = await queryFulfilled;
+        const orgPosDatas = getDecryptData(data?.data);
+        const groupList = JSON.parse(orgPosDatas);
+        dispatch(createOrgPositionList(groupList));
+      } catch (err) {
+        console.error("Fetching rolls failed: ", err);
+      }
+    },
+  }),
+  updatePosition: builder.mutation({
+    query: (formData) => ({
+      url: `/auth/position/updateposition`,
+      method: "PUT",
+      body: formData,
+    }),
+    async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+      try {
+        const { data } = await queryFulfilled;
+        const orgPosDatas = getDecryptData(data?.data);
+        const groupList = JSON.parse(orgPosDatas);
+        dispatch(createOrgPositionList(groupList));
+      } catch (err) {
+        console.error("Fetching rolls failed: ", err);
+      }
+    },
+  }),
+  deletePosition: builder.mutation({
+    query: (positionId) => ({
+      url: `/auth/position/removeposition/${positionId}`,
+      method: "DELETE",
+    }),
+    async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+      try {
+        const { data } = await queryFulfilled;
+        const orgPosDatas = getDecryptData(data?.data);
+        const groupList = JSON.parse(orgPosDatas);
+        dispatch(createOrgPositionList(groupList));
+      } catch (err) {
+        console.error("Fetching rolls failed: ", err);
+      }
+    },
+  }),
+  getAllOrgPosition: builder.query({
+    query: (id) => `/auth/position/getposition/${id}`,
+    async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+      try {
+        const { data } = await queryFulfilled;
+        const orgPosDatas = getDecryptData(data?.data);
+        const groupList = JSON.parse(orgPosDatas);
+        dispatch(createOrgPositionList(groupList));
+      } catch (err) {
+        console.error("Fetching rolls failed: ", err);
+      }
+    },
   }),
   createUserMember: builder.mutation({
     query: (formData) => ({

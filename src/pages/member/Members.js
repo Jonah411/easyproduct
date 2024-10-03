@@ -3,20 +3,23 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   createUserList,
   getUserList,
+  getOrgPosList,
   selectOrg,
   selectRoll,
 } from "../../Server/Reducer/authSlice";
 import {
   useCreateUserMemberMutation,
   useGetAllOrgUserQuery,
+  useGetAllOrgPositionQuery,
 } from "../../Server/Reducer/authApi";
 import { getDecryptData } from "../../common/encrypt";
-import { BASE_URL } from "../../common/ConstaltsVariables";
 import { useNavigate } from "react-router-dom";
 import { Drawer } from "@mui/material";
 import CreateUser from "../../components/CreateUser";
 import { CommonAlert } from "../../common/CommonAlert";
 import CommonPagination from "../../common/CommonPagination";
+import CardData from "../../components/Card/CardData";
+import PositionList from "../../components/Position/PositionList";
 
 const Members = () => {
   const dispatch = useDispatch();
@@ -24,6 +27,11 @@ const Members = () => {
   const rollData = useSelector(selectRoll);
   const [createUserMember, { data, error: createError, isSuccess, isError }] =
     useCreateUserMemberMutation();
+  useGetAllOrgPositionQuery(orgData ? orgData?._id : "", {
+    refetchOnMountOrArgChange: true,
+    skip: !orgData?._id,
+  });
+  const orgPosList = useSelector(getOrgPosList);
   const userDataString = useSelector(getUserList);
   useGetAllOrgUserQuery(orgData ? orgData?._id : "", {
     refetchOnMountOrArgChange: true,
@@ -112,8 +120,6 @@ const Members = () => {
   };
   useEffect(() => {
     if (isSuccess) {
-      console.log(data);
-
       const userDatas = getDecryptData(data?.data);
       const groupList = JSON.parse(userDatas);
 
@@ -125,8 +131,22 @@ const Members = () => {
       CommonAlert(createError?.data?.msg, "error");
     }
   }, [isSuccess, isError, data, createError, setOpenUser, dispatch]);
+  const handleViewClick = (e, li) => {
+    e.preventDefault();
+    navigate("/app/members_group", {
+      state: li,
+    });
+  };
+  console.log(
+    orgPosList,
+    "orgPosListorgPosListorgPosListorgPosListorgPosListorgPosList"
+  );
+
   return (
     <div className="p-2 mb-5">
+      {orgPosList?.Position?.length !== 0 && (
+        <PositionList PositionList={orgPosList?.Position} />
+      )}
       <div className="card mb-5">
         <div className="card-header">
           <div className="d-flex justify-content-between">
@@ -142,8 +162,26 @@ const Members = () => {
             </button>
           </div>
         </div>
-        <div className="card-body m-0 p-0">
-          <div className="table-responsive">
+        <div className="card-body">
+          <div className="row">
+            {getCurrentPageItems()?.map((li) => {
+              return (
+                <div className="col-12 col-sm-12 col-md-4 col-lg-2">
+                  <CardData
+                    data={li}
+                    address={li?.userAddress}
+                    title={"User"}
+                    dataId={li?.userId}
+                    count={li?.memberCount}
+                    roll={li.Roll?.rName}
+                    handleViewClick={handleViewClick}
+                  />
+                </div>
+              );
+            })}
+          </div>
+
+          {/* <div className="table-responsive">
             <div className="table-responsive table-wrapper">
               <table className="table table-bordered table-hover wo-table m-0">
                 <thead>
@@ -158,8 +196,7 @@ const Members = () => {
                     <th>Members Count</th>
                     <th>Image</th>
                     <th>Action</th>
-                    {/* {(rollData?.rAccess === "F" ||
-                      rollData?.rAccess === "H") && } */}
+                  
                   </tr>
                 </thead>
                 <tbody>
@@ -185,10 +222,7 @@ const Members = () => {
                               />
                             }
                           </td>
-                          {/* {(rollData?.rAccess === "F" ||
-                            rollData?.rAccess === "H") && (
-                           
-                          )} */}
+                      
                           <td>
                             <button
                               className="btn btn-sm btn-success"
@@ -198,7 +232,7 @@ const Members = () => {
                                 });
                               }}
                             >
-                              View Member
+                              View User
                             </button>
                           </td>
                         </tr>
@@ -217,7 +251,7 @@ const Members = () => {
                 </tbody>
               </table>
             </div>
-          </div>
+          </div> */}
         </div>
         <div className="cart-footer border">
           <CommonPagination

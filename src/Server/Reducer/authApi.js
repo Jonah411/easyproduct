@@ -74,4 +74,9 @@ export const {
   useCreateMemberMutation,
   useCreateUserMemberMutation,
   useGetRoutesDataQuery,
+  useGetAllOrgMemberQuery,
+  useCreatePositionMutation,
+  useGetAllOrgPositionQuery,
+  useUpdatePositionMutation,
+  useDeletePositionMutation,
 } = authApi;

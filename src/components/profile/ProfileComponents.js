@@ -41,7 +41,8 @@ const ProfileComponents = () => {
         <div className="card">
           <div className="card-header">
             <h6 className="text-center fw-bold">
-              {userData?.Organization?.orgDisplayName}
+              {`${userData?.Organization?.orgDisplayName} -
+              ${userData?.Organization?.orgId}`}
             </h6>
           </div>
           <div className="profile_dets">
@@ -87,6 +88,9 @@ const ProfileComponents = () => {
                   <div className=" rounded mx-auto d-block">
                     <p className="fw-bold text-light mt-2">
                       <span>User Roll: {userData?.Roll?.rName}</span>
+                    </p>
+                    <p className="fw-bold text-light mt-2">
+                      <span>User Id: {userData?.userId}</span>
                     </p>
                   </div>
                 </div>

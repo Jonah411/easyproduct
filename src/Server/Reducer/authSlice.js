@@ -10,10 +10,12 @@ const authSlice = createSlice({
     roll: JSON.parse(localStorage.getItem("roll")) || null,
     rollList: JSON.parse(localStorage.getItem("rollList")) || [],
     memberGroupList: JSON.parse(localStorage.getItem("memberGroupList")) || [],
+    memberList: JSON.parse(localStorage.getItem("memberList")) || [],
     orgList: JSON.parse(localStorage.getItem("orgList")) || [],
     userList: JSON.parse(localStorage.getItem("userList")) || [],
     routeList: JSON.parse(localStorage.getItem("routeList")) || [],
     menuList: JSON.parse(localStorage.getItem("menuList")) || [],
+    orgPosList: JSON.parse(localStorage.getItem("orgPosList")) || [],
   },
   reducers: {
     setToken: (state, action) => {
@@ -48,6 +50,10 @@ const authSlice = createSlice({
       state.memberGroupList = action.payload;
       localStorage.setItem("memberGroupList", JSON.stringify(action.payload));
     },
+    createMemberList: (state, action) => {
+      state.memberList = action.payload;
+      localStorage.setItem("memberList", JSON.stringify(action.payload));
+    },
     createUserList: (state, action) => {
       state.userList = action.payload;
       localStorage.setItem("userList", JSON.stringify(action.payload));
@@ -59,6 +65,10 @@ const authSlice = createSlice({
     createMenuList: (state, action) => {
       state.menuList = action.payload;
       localStorage.setItem("menuList", JSON.stringify(action.payload));
+    },
+    createOrgPositionList: (state, action) => {
+      state.orgPosList = action.payload;
+      localStorage.setItem("orgPosList", JSON.stringify(action.payload));
     },
     logout: (state) => {
       state.token = null;
@@ -72,6 +82,8 @@ const authSlice = createSlice({
       state.orgList = [];
       state.routeList = [];
       state.menuList = [];
+      state.memberList = [];
+      state.orgPosList = [];
       localStorage.removeItem("token");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("org");
@@ -83,6 +95,8 @@ const authSlice = createSlice({
       localStorage.removeItem("orgList");
       localStorage.removeItem("routeList");
       localStorage.removeItem("menuList");
+      localStorage.removeItem("memberList");
+      localStorage.removeItem("orgPosList");
     },
   },
 });
@@ -100,6 +114,8 @@ export const {
   createOrgList,
   createRouteList,
   createMenuList,
+  createMemberList,
+  createOrgPositionList,
 } = authSlice.actions;
 export const selectToken = (state) => state.auth.token;
 export const selectRefreshToken = (state) => state.auth.refreshToken;
@@ -112,4 +128,6 @@ export const getUserList = (state) => state.auth.userList;
 export const getOrgList = (state) => state.auth.orgList;
 export const getRouteList = (state) => state.auth.routeList;
 export const getMenuList = (state) => state.auth.menuList;
+export const getMemberList = (state) => state.auth.memberList;
+export const getOrgPosList = (state) => state.auth.orgPosList;
 export default authSlice.reducer;

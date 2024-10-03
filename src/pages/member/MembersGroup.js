@@ -6,17 +6,12 @@ import {
   useGetAllOrgUserMemberQuery,
 } from "../../Server/Reducer/authApi";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  createMemberGroupList,
-  createRollList,
-  getMemberGroupList,
-  selectRoll,
-} from "../../Server/Reducer/authSlice";
+import { getMemberGroupList, selectRoll } from "../../Server/Reducer/authSlice";
 import { Drawer } from "@mui/material";
 import CreateUser from "../../components/CreateUser";
 import { CommonAlert } from "../../common/CommonAlert";
-import { getDecryptData } from "../../common/encrypt";
 import CommonPagination from "../../common/CommonPagination";
+import CardDataGroup from "../../components/Card/CardDataGroup";
 
 const MembersGroup = () => {
   const location = useLocation();
@@ -31,7 +26,9 @@ const MembersGroup = () => {
   const [createMember, { data, error: createError, isSuccess, isError }] =
     useCreateMemberMutation();
   const memberGroupDataString = useSelector(getMemberGroupList);
-  const [memberGroupList, setMemberGroupList] = useState([]);
+  const [memberGroupList, setMemberGroupList] = useState(
+    memberGroupDataString?.length !== 0 ? memberGroupDataString : []
+  );
   const [formValue, setFormValue] = useState({
     name: "",
     age: "",
@@ -111,10 +108,10 @@ const MembersGroup = () => {
   }, [memberGroupDataString]);
   useEffect(() => {
     if (isSuccess) {
-      const memberDatas = getDecryptData(data?.data);
-      const groupList = JSON.parse(memberDatas);
-      dispatch(createMemberGroupList(groupList?.memberDataList));
-      dispatch(createRollList(groupList?.rollList));
+      // const memberDatas = getDecryptData(data?.data);
+      // const groupList = JSON.parse(memberDatas);
+      // dispatch(createMemberGroupList(groupList?.memberDataList));
+      // dispatch(createRollList(groupList?.rollList));
       setOpenUser(false);
       CommonAlert(data?.msg, "success");
     }
@@ -126,7 +123,7 @@ const MembersGroup = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const getCurrentPageItems = () => {
     return rowsPerPage > 0
-      ? memberGroupList.slice(
+      ? memberGroupList?.slice(
           page * rowsPerPage,
           page * rowsPerPage + rowsPerPage
         )
@@ -217,8 +214,20 @@ const MembersGroup = () => {
               </button>
             </div>
           </div>
-          <div className="card-body m-0 p-0">
-            <div className="table-responsive">
+          <div className="card-body ">
+            {getCurrentPageItems()?.map((li) => {
+              return (
+                <CardDataGroup
+                  data={li}
+                  address={li?.userAddress}
+                  title={"User"}
+                  dataId={li?.memberId}
+                  count={li?.memberCount}
+                  roll={li.Roll?.rName}
+                />
+              );
+            })}
+            {/* <div className="table-responsive">
               <div className="table-responsive table-wrapper">
                 <table className="table table-bordered table-hover wo-table m-0">
                   <thead>
@@ -279,7 +288,7 @@ const MembersGroup = () => {
                   </tbody>
                 </table>
               </div>
-            </div>
+            </div> */}
           </div>
           <div className="cart-footer border">
             <CommonPagination
