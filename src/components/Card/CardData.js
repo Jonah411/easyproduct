@@ -80,7 +80,7 @@ const CardData = ({
         >
           <Avatar
             alt={data?.userImage}
-            src={`${BASE_URL}/image/${data?.userImage}`}
+            src={`${BASE_URL}/image/${data?.userImage || data?.memberImage}`}
             sx={{ width: 80, height: 80 }}
           />
         </Box>

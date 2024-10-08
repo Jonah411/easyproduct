@@ -98,17 +98,6 @@ const Menu = ({ refetch, setMenuList }) => {
                 })}
                 isMulti
               />
-              {/* <input
-                className="form-control form-control-sm"
-                placeholder="Menu Name"
-                name="mName"
-                style={{
-                  border: formError?.mName
-                    ? !formMenu?.mName && "red 1px solid"
-                    : "",
-                }}
-                onChange={handleMenuChange}
-              /> */}
             </div>
             <div className="col-12 col-sm-12 col-md-6 col-lg-3">
               <Select
@@ -128,17 +117,6 @@ const Menu = ({ refetch, setMenuList }) => {
                   };
                 })}
               />
-              {/* <input
-                className="form-control form-control-sm"
-                placeholder="Menu Location"
-                name="mLocationPath"
-                onChange={handleMenuChange}
-                style={{
-                  border: formError?.mLocationPath
-                    ? !formMenu?.mLocationPath && "red 1px solid"
-                    : "",
-                }}
-              /> */}
             </div>
             <div className="col-12 col-sm-12 col-md-6 col-lg-3">
               <input

@@ -11,6 +11,7 @@ import {
   useCreateUserMemberMutation,
   useGetAllOrgUserQuery,
   useGetAllOrgPositionQuery,
+  useCreateUserMemberOTPMutation,
 } from "../../Server/Reducer/authApi";
 import { getDecryptData } from "../../common/encrypt";
 import { useNavigate } from "react-router-dom";
@@ -20,6 +21,7 @@ import { CommonAlert } from "../../common/CommonAlert";
 import CommonPagination from "../../common/CommonPagination";
 import CardData from "../../components/Card/CardData";
 import PositionList from "../../components/Position/PositionList";
+import CreateOTP from "../../components/CreateOTP";
 
 const Members = () => {
   const dispatch = useDispatch();
@@ -27,6 +29,15 @@ const Members = () => {
   const rollData = useSelector(selectRoll);
   const [createUserMember, { data, error: createError, isSuccess, isError }] =
     useCreateUserMemberMutation();
+  const [
+    createUserMemberOTP,
+    {
+      data: otpData,
+      error: otpError,
+      isSuccess: otpIsSuccess,
+      isError: otpIsError,
+    },
+  ] = useCreateUserMemberOTPMutation();
   useGetAllOrgPositionQuery(orgData ? orgData?._id : "", {
     refetchOnMountOrArgChange: true,
     skip: !orgData?._id,
@@ -57,12 +68,13 @@ const Members = () => {
     password: "",
     userAddress: "",
   });
+  const [formValueOTP, setFormValueOTP] = useState({});
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const getCurrentPageItems = () => {
     return rowsPerPage > 0
-      ? memberList.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+      ? memberList?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
       : memberList;
   };
 
@@ -71,6 +83,7 @@ const Members = () => {
   const [errorUser, setErrorUser] = useState("");
   const [previewUser, setPreviewUser] = useState("");
   const [openUser, setOpenUser] = useState(false);
+  const [openOTP, setOpenOTP] = useState(false);
   const toggleDrawer = (open) => (event) => {
     if (
       event.type === "keydown" &&
@@ -79,6 +92,15 @@ const Members = () => {
       return;
     }
     setOpenUser(open);
+  };
+  const toggleOTPDrawer = (open) => (event) => {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+    setOpenOTP(open);
   };
   const validationUser = (value) => {
     const error = {};
@@ -122,9 +144,10 @@ const Members = () => {
     if (isSuccess) {
       const userDatas = getDecryptData(data?.data);
       const groupList = JSON.parse(userDatas);
-
-      dispatch(createUserList(groupList));
+      setFormValueOTP({ ...groupList, verificationEmailCode: "" });
+      // dispatch(createUserList(groupList));
       setOpenUser(false);
+      setOpenOTP(true);
       CommonAlert(data?.msg, "success");
     }
     if (isError) {
@@ -141,7 +164,48 @@ const Members = () => {
     orgPosList,
     "orgPosListorgPosListorgPosListorgPosListorgPosListorgPosList"
   );
+  const handleOTPChange = (e) => {
+    const numberRegex = /^[0-9]+$/;
+    if (e.target.value === "") {
+      setFormValueOTP({
+        ...formValueOTP,
+        verificationEmailCode: "",
+      });
+    } else if (numberRegex.test(e.target.value)) {
+      setFormValueOTP({
+        ...formValueOTP,
+        verificationEmailCode: e.target.value,
+      });
+    }
+  };
+  const [formOTPError, setFormOTPError] = useState({});
+  const handleOTPClick = () => {
+    const error = {};
+    if (!formValueOTP?.verificationEmailCode) {
+      error.verificationEmailCode = "OTP is required!.";
+    }
+    if (Object?.keys(error)?.length === 0) {
+      var formData = new FormData();
+      formData.append("json_data", JSON.stringify(formValueOTP));
+      createUserMemberOTP(formData);
+    } else {
+      setFormOTPError(error);
+      Object?.keys(error)?.map((li) => CommonAlert(error[li], "error"));
+    }
+  };
+  useEffect(() => {
+    if (otpIsSuccess) {
+      const userDatas = getDecryptData(otpData?.data);
+      const groupList = JSON.parse(userDatas);
+      dispatch(createUserList(groupList));
 
+      setOpenOTP(false);
+      CommonAlert(otpData?.msg, "success");
+    }
+    if (otpIsError) {
+      CommonAlert(otpError?.data?.msg, "error");
+    }
+  }, [otpIsSuccess, otpIsError, otpData, otpError, setOpenOTP, dispatch]);
   return (
     <div className="p-2 mb-5">
       {orgPosList?.Position?.length !== 0 && (
@@ -153,7 +217,7 @@ const Members = () => {
             <h5 className="fw-bold">User List</h5>
             <button
               className="btn btn-sm btn-primary"
-              hidden={rollData?.rAccess !== "F"}
+              hidden={rollData?.rAccess === "W" || rollData?.rAccess === "R"}
               onClick={() => {
                 setOpenUser(true);
               }}
@@ -289,6 +353,25 @@ const Members = () => {
           setErrorUser={setErrorUser}
           title="Create"
           subtitle="User"
+        />
+      </Drawer>
+      <Drawer
+        anchor="right"
+        open={openOTP}
+        onClose={toggleOTPDrawer(false)}
+        PaperProps={{
+          sx: {
+            backgroundColor: "#f5f5f5",
+            width: "250px",
+          },
+        }}
+      >
+        <CreateOTP
+          setOpenOTP={setOpenOTP}
+          formValueOTP={formValueOTP}
+          handleOTPChange={handleOTPChange}
+          handleOTPClick={handleOTPClick}
+          formOTPError={formOTPError}
         />
       </Drawer>
     </div>

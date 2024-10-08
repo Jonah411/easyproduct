@@ -79,4 +79,5 @@ export const {
   useGetAllOrgPositionQuery,
   useUpdatePositionMutation,
   useDeletePositionMutation,
+  useCreateUserMemberOTPMutation,
 } = authApi;

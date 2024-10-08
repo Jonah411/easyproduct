@@ -167,4 +167,11 @@ export const memberRollEndpoints = (builder) => ({
       body: formData,
     }),
   }),
+  createUserMemberOTP: builder.mutation({
+    query: (formData) => ({
+      url: `/auth/user/createOTP`,
+      method: "POST",
+      body: formData,
+    }),
+  }),
 });

@@ -20,6 +20,7 @@ const Sidebar = ({ showSidebar }) => {
       <Nav className="flex-column custom-nav">
         {menuList?.map((menu) => (
           <NavLink
+            hidden={menu?.mLocationPath === "/app/members_group"}
             key={menu?._id}
             to={menu?.mLocationPath}
             className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}

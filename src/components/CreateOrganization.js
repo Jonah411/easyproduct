@@ -208,7 +208,6 @@ const CreateOrganization = ({
             </div>
           ) : (
             <div>
-              {" "}
               {preview && (
                 <Box mt={2}>
                   <img
