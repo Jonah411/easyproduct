@@ -9,7 +9,7 @@ const Organization = () => {
   const [formValue, setFormValue] = useState({});
   const [formError, setFormError] = useState({});
 
-  const [file, setFile] = useState(null);
+  // const [file, setFile] = useState(null);
   const [error, setError] = useState("");
   useEffect(() => {
     setFormValue(getOrg);
@@ -55,7 +55,7 @@ const Organization = () => {
         <div className="card-body">
           <UpdateOrganization
             formValue={formValue}
-            setFile={setFile}
+            // setFile={setFile}
             setError={setError}
             error={error}
             setFormValue={setFormValue}
