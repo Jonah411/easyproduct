@@ -19,16 +19,16 @@ export const userEndpoints = (builder) => ({
       method: "POST",
       body: formData,
     }),
-    async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-      try {
-        const { data } = await queryFulfilled;
-        if (data?.success) {
-          dispatch(createOrgList(data?.data?.organization));
-        }
-      } catch (err) {
-        console.error("Fetching rolls failed: ", err);
-      }
-    },
+    // async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+    //   try {
+    //     const { data } = await queryFulfilled;
+    //     if (data?.success) {
+    //       dispatch(createOrgList(data?.data?.organization));
+    //     }
+    //   } catch (err) {
+    //     console.error("Fetching rolls failed: ", err);
+    //   }
+    // },
   }),
   getUser: builder.query({
     query: (id) => `/user/${id}`,

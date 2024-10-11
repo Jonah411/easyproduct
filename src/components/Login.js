@@ -19,18 +19,31 @@ import { Visibility, VisibilityOff, Clear } from "@mui/icons-material";
 import OrgImg from "../images/orgImage.jpg";
 import {
   useCreateOrganizationMutation,
+  useCreateUserMemberOTPMutation,
   useGetAllOrgQuery,
 } from "../Server/Reducer/authApi";
 import CreateOrganization from "./CreateOrganization";
 import CreateUser from "./CreateUser";
 import { useNavigate } from "react-router-dom";
 import { CommonAlert } from "../common/CommonAlert";
-import { useSelector } from "react-redux";
-import { getOrgList } from "../Server/Reducer/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { createUserList, getOrgList } from "../Server/Reducer/authSlice";
+import CreateOTP from "./CreateOTP";
+import { getDecryptData } from "../common/encrypt";
 
 const Login = ({ loginDataError, login }) => {
+  const dispatch = useDispatch();
   const [createOrganization, { data, error: createError, isSuccess, isError }] =
     useCreateOrganizationMutation();
+  const [
+    createUserMemberOTP,
+    {
+      data: otpData,
+      error: otpError,
+      isSuccess: otpIsSuccess,
+      isError: otpIsError,
+    },
+  ] = useCreateUserMemberOTPMutation();
   const orgData = useSelector(getOrgList);
   const { isLoading: orgLoading } = useGetAllOrgQuery("", {
     refetchOnMountOrArgChange: true,
@@ -39,6 +52,7 @@ const Login = ({ loginDataError, login }) => {
 
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [openOTP, setOpenOTP] = useState(false);
   const [openUser, setOpenUser] = useState(false);
   const [statusOrg, setStatusOrg] = useState(false);
   const [formLogin, setFormLogin] = useState({
@@ -61,9 +75,14 @@ const Login = ({ loginDataError, login }) => {
     gender: "",
     email: "",
     phoneNo: "",
+    marraigestatus: "Single",
+    dob: null,
+    marraigedate: null,
     password: "",
     userAddress: "",
   });
+  const [formValueOTP, setFormValueOTP] = useState({});
+  const [formOTPError, setFormOTPError] = useState({});
   const [file, setFile] = useState(null);
   const [error, setError] = useState("");
   const [preview, setPreview] = useState("");
@@ -83,6 +102,15 @@ const Login = ({ loginDataError, login }) => {
       return;
     }
     setOpen(open);
+  };
+  const toggleOTPDrawer = (open) => (event) => {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+    setOpenOTP(open);
   };
   const [showPassword, setShowPassword] = React.useState(false);
 
@@ -199,7 +227,11 @@ const Login = ({ loginDataError, login }) => {
 
   useEffect(() => {
     if (isSuccess) {
+      const userDatas = getDecryptData(data?.data);
+      const groupList = JSON.parse(userDatas);
+      setFormValueOTP({ ...groupList, verificationEmailCode: "" });
       setOpenUser(false);
+      setOpenOTP(true);
       CommonAlert(data?.msg, "success");
     }
     if (isError) {
@@ -231,7 +263,47 @@ const Login = ({ loginDataError, login }) => {
       }
     }
   };
+  const handleOTPChange = (e) => {
+    const numberRegex = /^[0-9]+$/;
+    if (e.target.value === "") {
+      setFormValueOTP({
+        ...formValueOTP,
+        verificationEmailCode: "",
+      });
+    } else if (numberRegex.test(e.target.value)) {
+      setFormValueOTP({
+        ...formValueOTP,
+        verificationEmailCode: e.target.value,
+      });
+    }
+  };
+  const handleOTPClick = () => {
+    const error = {};
+    if (!formValueOTP?.verificationEmailCode) {
+      error.verificationEmailCode = "OTP is required!.";
+    }
+    if (Object?.keys(error)?.length === 0) {
+      var formData = new FormData();
+      formData.append("json_data", JSON.stringify(formValueOTP));
+      createUserMemberOTP(formData);
+    } else {
+      setFormOTPError(error);
+      Object?.keys(error)?.map((li) => CommonAlert(error[li], "error"));
+    }
+  };
+  useEffect(() => {
+    if (otpIsSuccess) {
+      const userDatas = getDecryptData(otpData?.data);
+      const groupList = JSON.parse(userDatas);
+      dispatch(createUserList(groupList));
 
+      setOpenOTP(false);
+      CommonAlert(otpData?.msg, "success");
+    }
+    if (otpIsError) {
+      CommonAlert(otpError?.data?.msg, "error");
+    }
+  }, [otpIsSuccess, otpIsError, otpData, otpError, setOpenOTP, dispatch]);
   return (
     <Box
       sx={{
@@ -456,6 +528,25 @@ const Login = ({ loginDataError, login }) => {
             setErrorUser={setErrorUser}
             title="Create"
             subtitle="User"
+          />
+        </Drawer>
+        <Drawer
+          anchor="right"
+          open={openOTP}
+          onClose={toggleOTPDrawer(false)}
+          PaperProps={{
+            sx: {
+              backgroundColor: "#f5f5f5",
+              width: "250px",
+            },
+          }}
+        >
+          <CreateOTP
+            setOpenOTP={setOpenOTP}
+            formValueOTP={formValueOTP}
+            handleOTPChange={handleOTPChange}
+            handleOTPClick={handleOTPClick}
+            formOTPError={formOTPError}
           />
         </Drawer>
       </div>

@@ -67,6 +67,9 @@ const Members = () => {
     phoneNo: "",
     password: "",
     userAddress: "",
+    marraigestatus: "Single",
+    dob: null,
+    marraigedate: null,
   });
   const [formValueOTP, setFormValueOTP] = useState({});
 
@@ -160,10 +163,7 @@ const Members = () => {
       state: li,
     });
   };
-  console.log(
-    orgPosList,
-    "orgPosListorgPosListorgPosListorgPosListorgPosListorgPosList"
-  );
+
   const handleOTPChange = (e) => {
     const numberRegex = /^[0-9]+$/;
     if (e.target.value === "") {
@@ -244,78 +244,6 @@ const Members = () => {
               );
             })}
           </div>
-
-          {/* <div className="table-responsive">
-            <div className="table-responsive table-wrapper">
-              <table className="table table-bordered table-hover wo-table m-0">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Age</th>
-                    <th>Gender</th>
-                    <th>Ph.No</th>
-                    <th>Email</th>
-                    <th>Address</th>
-                    <th>Roll</th>
-                    <th>Members Count</th>
-                    <th>Image</th>
-                    <th>Action</th>
-                  
-                  </tr>
-                </thead>
-                <tbody>
-                  {memberList?.length !== 0 ? (
-                    getCurrentPageItems()?.map((li) => {
-                      return (
-                        <tr key={li?._id}>
-                          <td>{li.name}</td>
-                          <td>{li.age}</td>
-                          <td>{li.gender}</td>
-                          <td>{li.phoneNo}</td>
-                          <td>{li.email}</td>
-                          <td>{li.userAddress}</td>
-                          <td>{li.Roll?.rName}</td>
-                          <td>{li.memberCount}</td>
-                          <td>
-                            {
-                              <img
-                                src={`${BASE_URL}/image/${li?.userImage}`}
-                                alt={li?.userImage}
-                                className="text-center roundedCircle  mt-0 mb-0"
-                                width={50}
-                              />
-                            }
-                          </td>
-                      
-                          <td>
-                            <button
-                              className="btn btn-sm btn-success"
-                              onClick={() => {
-                                navigate("/app/members_group", {
-                                  state: li,
-                                });
-                              }}
-                            >
-                              View User
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  ) : (
-                    <tr>
-                      <td
-                        colSpan={9}
-                        className="text-center fw-bold text-danger"
-                      >
-                        No Data!.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div> */}
         </div>
         <div className="cart-footer border">
           <CommonPagination

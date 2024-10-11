@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { selectOrg } from "../../Server/Reducer/authSlice";
 import UpdateOrganization from "../../components/Organization/UpdateOrganization";
 import { CommonAlert } from "../../common/CommonAlert";
+import OrgType from "../orgType/OrgType";
 
 const Organization = () => {
   const getOrg = useSelector(selectOrg);
@@ -14,7 +15,6 @@ const Organization = () => {
   useEffect(() => {
     setFormValue(getOrg);
   }, [getOrg]);
-  console.log(formValue, "formValueformValue");
 
   const handleUpdateOrg = () => {
     const error = {};
@@ -47,7 +47,7 @@ const Organization = () => {
     }
   };
   return (
-    <div className="p-2">
+    <div className="p-2 mb-5">
       <div className="card">
         <div className="card-header">
           <h5>Update Organization</h5>
@@ -74,6 +74,7 @@ const Organization = () => {
           </button>
         </div>
       </div>
+      <OrgType />
     </div>
   );
 };

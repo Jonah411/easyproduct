@@ -44,6 +44,8 @@ export const memberRollEndpoints = (builder) => ({
         };
         const rollDatas = getDecryptData(data?.data);
         const groupList = JSON.parse(rollDatas);
+        console.log(groupList);
+
         if (groupList?.length === 0) {
           var formData = new FormData();
           formData.append("json_data", JSON.stringify(user));
@@ -52,7 +54,7 @@ export const memberRollEndpoints = (builder) => ({
               if (res?.data?.status) {
                 const memberDatas = getDecryptData(res?.data?.data);
                 const groupList = JSON.parse(memberDatas);
-                dispatch(createMemberGroupList(groupList));
+                dispatch(createMemberGroupList([groupList]));
               } else {
                 dispatch(createMemberGroupList([]));
               }
@@ -86,16 +88,6 @@ export const memberRollEndpoints = (builder) => ({
       method: "POST",
       body: formData,
     }),
-    async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-      try {
-        const { data } = await queryFulfilled;
-        const memberDatas = getDecryptData(data?.data);
-        const groupList = JSON.parse(memberDatas);
-        dispatch(createMemberGroupList(groupList));
-      } catch (err) {
-        console.error("Fetching rolls failed: ", err);
-      }
-    },
   }),
   createPosition: builder.mutation({
     query: (formData) => ({
@@ -169,9 +161,26 @@ export const memberRollEndpoints = (builder) => ({
   }),
   createUserMemberOTP: builder.mutation({
     query: (formData) => ({
-      url: `/auth/user/createOTP`,
+      url: `/otp/createOTP`,
       method: "POST",
       body: formData,
     }),
+  }),
+  createMemberOTP: builder.mutation({
+    query: (formData) => ({
+      url: `/otp/createMemberOTP`,
+      method: "POST",
+      body: formData,
+    }),
+    async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+      try {
+        const { data } = await queryFulfilled;
+        const memberDatas = getDecryptData(data?.data);
+        const groupList = JSON.parse(memberDatas);
+        dispatch(createMemberGroupList(groupList));
+      } catch (err) {
+        console.error("Fetching rolls failed: ", err);
+      }
+    },
   }),
 });

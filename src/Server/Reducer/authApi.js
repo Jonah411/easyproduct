@@ -5,6 +5,7 @@ import { logout, selectRefreshToken, setToken } from "./authSlice";
 import { authEndpoints } from "../Payload/authEndPoint";
 import { menuRollEndpoints } from "../Payload/menuRollEndpoints";
 import { memberRollEndpoints } from "../Payload/memberEndPoint";
+import { orgTypeEndpoints } from "../Payload/orgTypeEndPoint";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${BASE_URL}`,
@@ -49,6 +50,7 @@ const combinedEndpoints = (builder) => ({
   ...authEndpoints(builder),
   ...menuRollEndpoints(builder),
   ...memberRollEndpoints(builder),
+  ...orgTypeEndpoints(builder),
 });
 
 export const authApi = createApi({
@@ -80,4 +82,6 @@ export const {
   useUpdatePositionMutation,
   useDeletePositionMutation,
   useCreateUserMemberOTPMutation,
+  useCreateMemberOTPMutation,
+  useCreateOrgTypeMutation,
 } = authApi;

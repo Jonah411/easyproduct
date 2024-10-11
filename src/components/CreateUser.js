@@ -11,6 +11,7 @@ import {
   OutlinedInput,
   Box,
 } from "@mui/material";
+import DatePicker from "react-datepicker";
 
 const CreateUser = ({
   setFormValue,
@@ -137,6 +138,59 @@ const CreateUser = ({
             </FormControl>
           </Grid>
         </Grid>
+        <FormControl fullWidth className="mt-4">
+          <DatePicker
+            selected={formValue?.dob}
+            onChange={(date) => setFormValue({ ...formValue, dob: date })}
+            dateFormat="dd/MM/yyyy"
+            placeholderText="Select a DOB"
+            className="custom-datepicker form-control"
+          />
+        </FormControl>
+        <FormControl fullWidth className="mt-4">
+          <InputLabel id="demo-simple-select-label">
+            User Marraige Status
+          </InputLabel>
+          <Select
+            id="outlined-basic"
+            label="User Marraige Status"
+            variant="outlined"
+            value={formValue?.marraigestatus}
+            size="small"
+            name="marraigestatus"
+            onChange={(e) => {
+              const { value } = e.target;
+              if (value === "Single") {
+                setFormValue({
+                  ...formValue,
+                  marraigestatus: value,
+                  marraigedate: null,
+                });
+              } else {
+                setFormValue({
+                  ...formValue,
+                  marraigestatus: value,
+                });
+              }
+            }}
+          >
+            <MenuItem value="Single">UnMarried</MenuItem>
+            <MenuItem value="Married">Married</MenuItem>
+          </Select>
+        </FormControl>
+        {formValue?.marraigestatus === "Married" && (
+          <FormControl fullWidth className="mt-4">
+            <DatePicker
+              selected={formValue?.marraigedate}
+              onChange={(date) =>
+                setFormValue({ ...formValue, marraigedate: date })
+              }
+              dateFormat="dd/MM/yyyy"
+              placeholderText="Select a marraigedate"
+              className="custom-datepicker form-control"
+            />
+          </FormControl>
+        )}
         <FormControl fullWidth className="mt-4">
           <TextField
             id="outlined-basic"
