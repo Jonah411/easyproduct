@@ -13,7 +13,6 @@ import RollAccess from "../Menu/RollAccess";
 const ProfileComponents = () => {
   const userId = useSelector(selectUser);
   const orgId = useSelector(selectOrg);
-  console.log(userId);
 
   const { data: userDataString } = useGetSingleUserQuery(
     userId?.User ? userId?.User : userId?._id,

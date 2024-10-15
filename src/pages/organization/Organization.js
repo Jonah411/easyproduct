@@ -4,6 +4,7 @@ import { selectOrg } from "../../Server/Reducer/authSlice";
 import UpdateOrganization from "../../components/Organization/UpdateOrganization";
 import { CommonAlert } from "../../common/CommonAlert";
 import OrgType from "../orgType/OrgType";
+import CreateMenu from "../../components/OrgType/CreateMenu";
 
 const Organization = () => {
   const getOrg = useSelector(selectOrg);
@@ -75,6 +76,7 @@ const Organization = () => {
         </div>
       </div>
       <OrgType />
+      <CreateMenu />
     </div>
   );
 };

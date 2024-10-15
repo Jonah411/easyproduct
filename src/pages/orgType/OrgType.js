@@ -132,7 +132,7 @@ const OrgType = () => {
     }
   }, [isSuccess, isError, data, createError]);
   return (
-    <div className="card mt-2 mb-5">
+    <div className="card mt-2 mb-2">
       <div className="card-header">
         <h5>Create OrgType</h5>
       </div>
